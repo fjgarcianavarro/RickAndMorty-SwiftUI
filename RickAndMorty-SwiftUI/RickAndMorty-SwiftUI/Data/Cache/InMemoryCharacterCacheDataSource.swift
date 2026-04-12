@@ -6,8 +6,6 @@
 //
 
 actor InMemoryCharacterCacheDataSource: CharacterCacheDataSourceType {
-    static let shared: InMemoryCharacterCacheDataSource = InMemoryCharacterCacheDataSource()
-    
     private var cache: CharacterEntity?
     
     func getCharacter(id: Int) async -> CharacterEntity? {

@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class CharacterImageErrorMapper {
+nonisolated struct CharacterImageErrorMapper {
     func map(error: HTTPClientError?) -> CharacterImageError {
         guard error == .clientError || error == .invalidURL else {
             return .unknown

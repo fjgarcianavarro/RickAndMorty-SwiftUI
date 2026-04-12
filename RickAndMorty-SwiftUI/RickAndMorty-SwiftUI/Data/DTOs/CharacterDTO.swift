@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct CharacterDTO: Codable {
+nonisolated struct CharacterDTO: Codable {
     let id: Int
     let name: String
     let status: String?

@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class CharacterDomainMapper {
+nonisolated struct CharacterDomainMapper {
     func map(character: CharacterDTO) -> CharacterEntity {
         return CharacterEntity(
             id: character.id,

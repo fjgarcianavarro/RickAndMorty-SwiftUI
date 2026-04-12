@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class CharacterDomainErrorMapper {
+nonisolated struct CharacterDomainErrorMapper {
     func map(error: HTTPClientError?) -> CharacterDomainError {
         switch error {
         case .clientError, .responseError:

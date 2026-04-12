@@ -13,13 +13,13 @@ struct CharacterDataTestData {
         return [
             CharacterData(id: 1,
                           name: "Rick Sanchez",
-                          status: .alive,
+                          status: "Alive",
                           species: "Human",
                           type: nil,
-                          gender: .male,
+                          gender: "Male",
                           origin: makeLocation(),
                           location: makeLocation(),
-                          imageURL: URL(string: "https://rickandmortyapi.com/api/character/avatar/1.jpeg"),
+                          imageURL: "https://rickandmortyapi.com/api/character/avatar/1.jpeg",
                           episodes: [
                             "https://rickandmortyapi.com/api/episode/1",
                             "https://rickandmortyapi.com/api/episode/2",
@@ -29,13 +29,13 @@ struct CharacterDataTestData {
             CharacterData(
                 id: 2,
                 name: "Morty Smith",
-                status: .alive,
+                status: "Alive",
                 species: "Human",
                 type: nil,
-                gender: .male,
+                gender: "Male",
                 origin: makeLocation(),
                 location: makeLocation(),
-                imageURL: URL(string: "https://rickandmortyapi.com/api/character/avatar/2.jpeg"),
+                imageURL: "https://rickandmortyapi.com/api/character/avatar/2.jpeg",
                 episodes: [
                     "https://rickandmortyapi.com/api/episode/1",
                     "https://rickandmortyapi.com/api/episode/2",
@@ -45,13 +45,13 @@ struct CharacterDataTestData {
             CharacterData(
                 id: 3,
                 name: "Summer Smith",
-                status: .alive,
+                status: "Alive",
                 species: "Human",
                 type: nil,
-                gender: .female,
+                gender: "Female",
                 origin: makeLocation(),
                 location: makeLocation(),
-                imageURL: URL(string: "https://rickandmortyapi.com/api/character/avatar/3.jpeg"),
+                imageURL: "https://rickandmortyapi.com/api/character/avatar/3.jpeg",
                 episodes: [
                     "https://rickandmortyapi.com/api/episode/6",
                     "https://rickandmortyapi.com/api/episode/7",
@@ -61,9 +61,9 @@ struct CharacterDataTestData {
             )
         ]
     }
-    
+
     static func makeLocation() -> LocationData {
         return LocationData(name: "Earth (C-137)",
-                            url:  URL(string: "https://rickandmortyapi.com/api/location/1"))
+                            url: "https://rickandmortyapi.com/api/location/1")
     }
 }

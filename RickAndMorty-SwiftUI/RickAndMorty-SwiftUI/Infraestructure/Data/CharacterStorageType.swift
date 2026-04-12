@@ -7,8 +7,7 @@
 
 import Foundation
 
-protocol CharacterStorageType {
-    func fetchCharacter(id: Int, isDetailed: Bool) async -> CharacterData?
-    func insert(_ character: CharacterData) async
-    func update(_ character: CharacterData, existing: CharacterData) async
+protocol CharacterStorageType: Sendable {
+    func fetchCharacter(id: Int, isDetailed: Bool) async -> CharacterStorageDTO?
+    func upsert(_ character: CharacterStorageDTO) async
 }

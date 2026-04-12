@@ -7,6 +7,6 @@
 
 import Foundation
 
-protocol CharacterRepositoryType {
+protocol CharacterRepositoryType: Sendable {
     func getCharacters() async -> Result<[CharacterEntity], CharacterDomainError>
 }

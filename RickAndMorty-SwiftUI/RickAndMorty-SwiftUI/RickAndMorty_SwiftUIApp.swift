@@ -9,9 +9,11 @@ import SwiftUI
 
 @main
 struct RickAndMorty_SwiftUIApp: App {
+    private let container = DependencyContainer()
+
     var body: some Scene {
         WindowGroup {
-            ContentView(characterListView: CharacterListFactory.create())
+            ContentView(characterListView: CharacterListFactory.create(container: container))
         }
     }
 }

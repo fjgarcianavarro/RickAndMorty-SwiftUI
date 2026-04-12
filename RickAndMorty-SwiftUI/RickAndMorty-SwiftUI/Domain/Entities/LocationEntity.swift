@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct LocationEntity {
+nonisolated struct LocationEntity: Sendable {
     let name: String
     let url: URL?
 }

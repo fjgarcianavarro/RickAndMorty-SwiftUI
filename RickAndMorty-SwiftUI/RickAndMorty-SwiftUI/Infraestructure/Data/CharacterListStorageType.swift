@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol CharacterListStorageType {
-    func fetchCharacters() async -> [CharacterData]
-    func insert(_ characters: [CharacterData]) async
+protocol CharacterListStorageType: Sendable {
+    func fetchCharacters() async -> [CharacterStorageDTO]
+    func insert(_ characters: [CharacterStorageDTO]) async
 }

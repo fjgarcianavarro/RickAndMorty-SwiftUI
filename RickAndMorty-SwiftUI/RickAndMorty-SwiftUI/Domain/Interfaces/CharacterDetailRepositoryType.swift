@@ -7,6 +7,6 @@
 
 import Foundation
 
-protocol CharacterDetailRepositoryType {
+protocol CharacterDetailRepositoryType: Sendable {
     func getCharacterDetail(id: String) async -> Result<CharacterEntity, CharacterDomainError>
 }

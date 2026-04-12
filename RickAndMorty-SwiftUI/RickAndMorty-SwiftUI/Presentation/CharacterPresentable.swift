@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct CharacterPresentable {
+nonisolated struct CharacterPresentable: Sendable {
     let id: String
     let name: String
     let status: String

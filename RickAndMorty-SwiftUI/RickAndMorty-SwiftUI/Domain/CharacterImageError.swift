@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum CharacterImageError: Error {
+nonisolated enum CharacterImageError: Error {
     case invalidURL
     case networkError
     case unknown

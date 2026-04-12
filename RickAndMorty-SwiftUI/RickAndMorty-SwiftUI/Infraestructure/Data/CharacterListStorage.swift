@@ -8,40 +8,37 @@
 import Foundation
 import SwiftData
 
-final class CharacterListStorage: CharacterListStorageType {
-    
-    static let shared = CharacterListStorage()
-    
-    private let container: ModelContainer
-    private let context: ModelContext
-    
-    private init?() {
-        let schema = Schema([CharacterData.self])
-        
+nonisolated enum SharedModelContainer {
+    static let instance: ModelContainer = {
         do {
-            container = try ModelContainer(for: schema, configurations: [])
-            context = ModelContext(container)
+            return try ModelContainer(for: CharacterData.self)
         } catch {
-            print("❌ Error initializing CharacterListStorage: \(error)")
-            return nil
+            fatalError("Failed to create ModelContainer: \(error)")
         }
+    }()
+}
+
+actor CharacterListStorage: CharacterListStorageType, ModelActor {
+    nonisolated let modelContainer: ModelContainer
+    nonisolated let modelExecutor: any ModelExecutor
+    private let mapper: CharacterDataStorageMapper
+
+    init(modelContainer: ModelContainer, mapper: CharacterDataStorageMapper) {
+        let context = ModelContext(modelContainer)
+        self.modelExecutor = DefaultSerialModelExecutor(modelContext: context)
+        self.modelContainer = modelContainer
+        self.mapper = mapper
     }
-    
-    func fetchCharacters() -> [CharacterData] {
+
+    func fetchCharacters() -> [CharacterStorageDTO] {
         let descriptor = FetchDescriptor<CharacterData>()
-        
-        guard let characters = try? context.fetch(descriptor) else {
-            return []
-        }
-        
-        return characters
+        let characters = (try? modelContext.fetch(descriptor)) ?? []
+        return characters.map { mapper.map(model: $0) }
     }
-    
-    func insert(_ characters: [CharacterData]) async {
-        characters.forEach { character in
-            context.insert(character)
-        }
-        
-        try? context.save()
+
+    func insert(_ characters: [CharacterStorageDTO]) {
+        let models = characters.map { mapper.map(dto: $0) }
+        models.forEach { modelContext.insert($0) }
+        try? modelContext.save()
     }
 }

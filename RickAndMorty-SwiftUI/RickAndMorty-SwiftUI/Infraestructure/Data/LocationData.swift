@@ -9,12 +9,12 @@ import Foundation
 import SwiftData
 
 @Model
-final class LocationData {
+nonisolated final class LocationData {
     var name: String
     var url: String?
 
-    init(name: String, url: URL?) {
+    init(name: String, url: String?) {
         self.name = name
-        self.url = url?.absoluteString
+        self.url = url
     }
 }

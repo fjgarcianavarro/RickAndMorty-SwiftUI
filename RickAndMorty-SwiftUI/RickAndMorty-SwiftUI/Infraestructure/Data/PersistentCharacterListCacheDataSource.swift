@@ -8,27 +8,21 @@
 import Foundation
 
 final class PersistentCharacterListCacheDataSource: CharacterListCacheDataSourceType {
-    private let container: CharacterListStorageType?
-    private let characterDataMapper: CharacterDataMapper
-    
-    init(container: CharacterListStorageType?, characterDataMapper: CharacterDataMapper) {
-        self.container = container
-        self.characterDataMapper = characterDataMapper
+    private let storage: CharacterListStorageType
+    private let mapper: CharacterStorageDTOMapper
+
+    init(storage: CharacterListStorageType, mapper: CharacterStorageDTOMapper) {
+        self.storage = storage
+        self.mapper = mapper
     }
-    
+
     func getCharacterList() async -> [CharacterEntity] {
-        guard let characters = await container?.fetchCharacters() else {
-            return []
-        }
-        
-        return characters.map { characterDataMapper.map(characterData: $0) }
+        let dtos = await storage.fetchCharacters()
+        return dtos.map { mapper.map(dto: $0) }
     }
-    
+
     func saveCharacterList(_ characterList: [CharacterEntity]) async {
-        let charactersData = characterList.map {
-            characterDataMapper.map(characterEntity: $0)
-        }
-        
-        await container?.insert(charactersData)
+        let dtos = characterList.map { mapper.map(entity: $0) }
+        await storage.insert(dtos)
     }
 }

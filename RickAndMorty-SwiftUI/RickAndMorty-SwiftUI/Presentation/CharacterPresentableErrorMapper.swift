@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class CharacterPresentableErrorMapper {
+struct CharacterPresentableErrorMapper {
     func map(error: CharacterDomainError?) -> LocalizedStringResource {
         switch error {
         case .generic:

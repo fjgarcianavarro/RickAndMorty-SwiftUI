@@ -8,7 +8,7 @@
 import XCTest
 @testable import RickAndMorty_SwiftUI
 
-final class CharacterDomainErrorMapperTests: XCTestCase {
+nonisolated final class CharacterDomainErrorMapperTests: XCTestCase {
     /// Ensures that `map(error:)` correctly maps `.tooManyRequests` from `HTTPClientError` to `CharacterDomainError.tooManyRequests`.
     func test_map_returns_tooManyRequests_when_error_is_tooManyRequests() {
         // GIVEN

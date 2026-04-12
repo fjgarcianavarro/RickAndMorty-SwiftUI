@@ -7,14 +7,14 @@
 
 import Foundation
 
-protocol CharacterListRemoteDataSourceType {
+protocol CharacterListRemoteDataSourceType: Sendable {
     func getCharacters() async -> Result<[CharacterDTO], HTTPClientError>
 }
 
-protocol CharacterImageRemoteDataSourceType {
+protocol CharacterImageRemoteDataSourceType: Sendable {
     func downloadImage(from url: URL) async -> Result<Data, HTTPClientError>
 }
 
-protocol CharacterDetailRemoteDataSourceType {
+protocol CharacterDetailRemoteDataSourceType: Sendable {
     func getCharacter(id: Int) async -> Result<CharacterDTO, HTTPClientError>
 }

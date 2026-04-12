@@ -66,28 +66,28 @@ struct CharacterListView: View {
 
 #Preview ("Light mode - EN"){
     CharacterListView(viewModel: .preview,
-                      createCharacterDetailView: CharacterDetailFactory())
+                      createCharacterDetailView: CharacterDetailFactory(container: DependencyContainer()))
     .preferredColorScheme(.light)
     .environment(\.locale, Locale(identifier: "en"))
 }
 
 #Preview ("Dark mode - EN"){
     CharacterListView(viewModel: .preview,
-                      createCharacterDetailView: CharacterDetailFactory())
+                      createCharacterDetailView: CharacterDetailFactory(container: DependencyContainer()))
     .preferredColorScheme(.dark)
     .environment(\.locale, Locale(identifier: "en"))
 }
 
 #Preview ("Light mode - ES"){
     CharacterListView(viewModel: .preview,
-                      createCharacterDetailView: CharacterDetailFactory())
+                      createCharacterDetailView: CharacterDetailFactory(container: DependencyContainer()))
     .preferredColorScheme(.light)
     .environment(\.locale, Locale(identifier: "es"))
 }
 
 #Preview ("Dark mode - ES"){
     CharacterListView(viewModel: .preview,
-                      createCharacterDetailView: CharacterDetailFactory())
+                      createCharacterDetailView: CharacterDetailFactory(container: DependencyContainer()))
     .preferredColorScheme(.dark)
     .environment(\.locale, Locale(identifier: "es"))
 }

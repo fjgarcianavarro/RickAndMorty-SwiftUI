@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol DownloadCharacterImageUseCaseType {
+protocol DownloadCharacterImageUseCaseType: Sendable {
     func execute(url: URL) async -> Result<Data, CharacterImageError>
 }
 

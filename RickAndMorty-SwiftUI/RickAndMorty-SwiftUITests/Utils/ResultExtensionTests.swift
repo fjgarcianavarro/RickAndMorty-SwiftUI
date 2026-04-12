@@ -8,7 +8,7 @@
 import XCTest
 @testable import RickAndMorty_SwiftUI
 
-final class ResultExtensionTests: XCTestCase {
+nonisolated final class ResultExtensionTests: XCTestCase {
     /// Ensures that `failureValue` correctly returns the error when the `Result` is a failure.
     func test_failureValue_returns_error_when_result_is_failure() {
         // GIVEN

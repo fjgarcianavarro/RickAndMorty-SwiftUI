@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct CharacterEntity {
+nonisolated struct CharacterEntity: Sendable {
     let id: Int
     let name: String
     let status: CharacterStatus
@@ -21,14 +21,14 @@ struct CharacterEntity {
 }
 
 // Enum para Status
-enum CharacterStatus: String {
+nonisolated enum CharacterStatus: String, Sendable {
     case alive = "Alive"
     case dead = "Dead"
     case unknown = "unknown"
 }
 
 // Enum para Gender
-enum CharacterGender: String {
+nonisolated enum CharacterGender: String, Sendable {
     case male = "Male"
     case female = "Female"
     case genderless = "Genderless"

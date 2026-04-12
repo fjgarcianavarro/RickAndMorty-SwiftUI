@@ -10,7 +10,7 @@ import Foundation
 
 // Move these Equatable extensions to the main project if they are going to be used. Otherwise, keep them within the test files.
 
-extension CharacterEntity: Equatable {
+nonisolated extension CharacterEntity: @retroactive Equatable {
     public static func == (lhs: CharacterEntity, rhs: CharacterEntity) -> Bool {
         return lhs.id == rhs.id &&
         lhs.name == rhs.name &&
@@ -24,13 +24,13 @@ extension CharacterEntity: Equatable {
     }
 }
 
-extension LocationEntity: Equatable {
+nonisolated extension LocationEntity: @retroactive Equatable {
     public static func == (lhs: LocationEntity, rhs: LocationEntity) -> Bool {
         return lhs.name == rhs.name && lhs.url == rhs.url
     }
 }
 
-extension CharacterDTO: Equatable {
+nonisolated extension CharacterDTO: @retroactive Equatable {
     public static func == (lhs: CharacterDTO, rhs: CharacterDTO) -> Bool {
         return lhs.id == rhs.id &&
                lhs.name == rhs.name &&
@@ -44,7 +44,7 @@ extension CharacterDTO: Equatable {
     }
 }
 
-extension LocationDTO: Equatable {
+nonisolated extension LocationDTO: @retroactive Equatable {
     public static func == (lhs: LocationDTO, rhs: LocationDTO) -> Bool {
         return lhs.name == rhs.name && lhs.url == rhs.url
     }

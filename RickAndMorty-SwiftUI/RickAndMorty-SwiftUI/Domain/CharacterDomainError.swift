@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum CharacterDomainError: Error {
+nonisolated enum CharacterDomainError: Error {
     case generic
     case invalidResponse
     case decodingFailed

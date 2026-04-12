@@ -8,55 +8,55 @@
 import XCTest
 @testable import RickAndMorty_SwiftUI
 
-final class PersistentCharacterListCacheDataSourceTests: XCTestCase {
+nonisolated final class PersistentCharacterListCacheDataSourceTests: XCTestCase {
     /// Ensures that `getCharacterList` returns an empty array when there is no cached data.
-    func test_getCharacterList_returns_empty_when_storage_is_empty() async {
+    @MainActor func test_getCharacterList_returns_empty_when_storage_is_empty() async {
         // GIVEN
         let storageStub = CharacterListStorageStub(fetchCharactersResult: [])
         let sut = makeSUT(storageStub)
-        
+
         // WHEN
         let result = await sut.getCharacterList()
-        
+
         // THEN
         XCTAssertEqual(result, [])
     }
-    
-    /// Ensures that `getCharacterList` correctly maps stored `CharacterData` into `CharacterEntity`.
-    func test_getCharacterList_correctly_maps_stored_data_to_entities() async {
+
+    /// Ensures that `getCharacterList` correctly maps stored `CharacterStorageDTO` into `CharacterEntity`.
+    @MainActor func test_getCharacterList_correctly_maps_stored_data_to_entities() async {
         // GIVEN
-        let storedCharacters = CharacterDataTestData.makeCharacterList()
+        let storedDTOs = CharacterStorageDTOTestData.makeCharacterList()
         let expectedEntities = CharacterEntityTestData.makeCharacterList()
-        
-        let storageStub = CharacterListStorageStub(fetchCharactersResult: storedCharacters)
+
+        let storageStub = CharacterListStorageStub(fetchCharactersResult: storedDTOs)
         let sut = makeSUT(storageStub)
-        
+
         // WHEN
         let result = await sut.getCharacterList()
-        
+
         // THEN
         XCTAssertEqual(result, expectedEntities)
     }
-    
+
     /// Ensures that `saveCharacterList` correctly handles an empty list without errors.
-    func test_saveCharacterList_saves_empty_list_in_persistent_storage() async {
+    @MainActor func test_saveCharacterList_saves_empty_list_in_persistent_storage() async {
         // GIVEN
         let emptyCharacterList: [CharacterEntity] = []
         let storageStub = CharacterListStorageStub(fetchCharactersResult: [])
-        
+
         let sut = makeSUT(storageStub)
-        
+
         // WHEN
         await sut.saveCharacterList(emptyCharacterList)
-        
+
         // THEN
-        XCTAssertEqual(storageStub.insertedCharacters, [])
+        XCTAssertEqual(storageStub.insertedCharacters.count, 0)
     }
 }
 
 extension PersistentCharacterListCacheDataSourceTests {
-    private func makeSUT(_ characterListStorage: CharacterListStorageType?) -> CharacterListCacheDataSourceType {
-        let characterDataMapper = CharacterDataMapper(locationMapper: LocationDataMapper())
-        return PersistentCharacterListCacheDataSource(container: characterListStorage, characterDataMapper: characterDataMapper)
+    @MainActor private func makeSUT(_ characterListStorage: CharacterListStorageType) -> CharacterListCacheDataSourceType {
+        PersistentCharacterListCacheDataSource(storage: characterListStorage,
+                                               mapper: CharacterStorageDTOMapper())
     }
 }

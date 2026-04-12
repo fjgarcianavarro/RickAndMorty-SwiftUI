@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol GetAllCharactersUseCaseType {
+protocol GetAllCharactersUseCaseType: Sendable {
     func execute() async -> Result<[CharacterEntity], CharacterDomainError>
 }
 

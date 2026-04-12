@@ -8,8 +8,6 @@
 import Foundation
 
 actor InMemoryCharacterListCacheDataSource: CharacterListCacheDataSourceType {
-    static let shared: InMemoryCharacterListCacheDataSource = InMemoryCharacterListCacheDataSource()
-    
     private var cache: [CharacterEntity] = []
     
     func getCharacterList() async -> [CharacterEntity] {

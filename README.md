@@ -255,11 +255,24 @@ Additionally:
 
 ---
 
+## 🧵 Concurrency Model
+
+The project targets **Swift 6 with complete strict concurrency checking** (`SWIFT_STRICT_CONCURRENCY = complete`) and adopts the **approachable concurrency** upcoming features (`SWIFT_APPROACHABLE_CONCURRENCY = YES`, which enables `NonisolatedNonsendingByDefault`).
+
+Key architectural decisions driven by this choice:
+
+- ✅ **Data-layer protocols explicitly conform to `Sendable`** (`CharacterCacheDataSourceType`, `CharacterRepositoryType`, …). This is a defensive contract: under `NonisolatedNonsendingByDefault`, `async` methods inherit the caller's isolation, so the compiler may not enforce `Sendable` today because the entire repository chain currently runs on `@MainActor`. Declaring it explicitly keeps the architecture safe the moment any caller introduces `Task.detached` or a non-main-actor context.
+- ✅ **Mutable caches are modeled as `actor` types** (`InMemoryCharacterCacheDataSource`, `InMemoryCharacterListCacheDataSource`, `CharacterImageCache`), guaranteeing serialized access to shared state without locks.
+- ✅ **SwiftData persistence uses `ModelActor`** (`CharacterStorage`, `CharacterListStorage`), isolating `ModelContext` in its own actor as Apple recommends.
+- ✅ **ViewModels are `@MainActor`-isolated**, and the asynchronous chain from view model → use case → repository → cache runs without unnecessary hops thanks to `NonisolatedNonsendingByDefault`.
+
+---
+
 ## 🛠 Technologies and Tools
 
-- ✅ **Swift 5.9+**
+- ✅ **Swift 6.0 with complete strict concurrency**
 - ✅ **SwiftUI**
-- ✅ **Async/Await for concurrency**
+- ✅ **Async/Await, actors, and approachable concurrency (`NonisolatedNonsendingByDefault`)**
 - ✅ **Clean Architecture + SOLID**
 - ✅ **URLSession for networking**
 - ✅ **NSCache for image caching**
@@ -341,6 +354,14 @@ GET https://rickandmortyapi.com/api/character
 -	📌 **Enhance location details by combining multiple API services in a dedicated use case**
 -	📌 **Extend episode details retrieval using a similar approach to location details**
 -	📌 **Implement search filters for better character discovery**
+
+---
+
+## 📖 Background
+
+This project was originally built in 2025 as the technical assessment for an iOS position at **Inditex / Zara**. After the technical interview with the Zara iOS architects, the role offered was raised from **iOS Developer** to **iOS Technical Lead** based on the codebase and the discussion around it.
+
+It has been kept up to date since then as a living reference for Clean Architecture and modern Swift concurrency in SwiftUI.
 
 ---
 

@@ -8,7 +8,7 @@
 import XCTest
 @testable import RickAndMorty_SwiftUI
 
-final class CharacterDomainMapperTests: XCTestCase {
+nonisolated final class CharacterDomainMapperTests: XCTestCase {
     /// Ensures that `map(character:)` correctly maps a valid `CharacterDTO` to `CharacterEntity`.
     func test_mapCharacter_correctly_maps_valid_characterDTO() {
         // GIVEN

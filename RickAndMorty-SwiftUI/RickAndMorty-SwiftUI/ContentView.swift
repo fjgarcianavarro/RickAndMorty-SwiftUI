@@ -17,5 +17,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView(characterListView: CharacterListView(viewModel: .preview,
-                                                     createCharacterDetailView: CharacterDetailFactory()))
+                                                     createCharacterDetailView: CharacterDetailFactory(container: DependencyContainer())))
 }

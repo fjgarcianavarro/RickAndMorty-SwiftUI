@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 final class CharacterListViewModel: ObservableObject {
     private let getAllCharactersUseCase: GetAllCharactersUseCaseType
     let downloadImageUseCase: DownloadCharacterImageUseCaseType
@@ -41,23 +42,19 @@ final class CharacterListViewModel: ObservableObject {
         let result = await getAllCharactersUseCase.execute()
         
         guard case .success(let characters) = result else {
-            await handleError(error: result.failureValue as? CharacterDomainError)
+            handleError(error: result.failureValue as? CharacterDomainError)
             return
         }
         
         let charactersPortable = characters.map { CharacterPresentable(domainModel: $0) }
         
-        await MainActor.run {
-            self.loading = false
-            self.characters = charactersPortable
-        }
+        self.loading = false
+        self.characters = charactersPortable
     }
     
-    private func handleError(error: CharacterDomainError?) async {
-        await MainActor.run {
-            self.loading = false
-            self.showAlert = true
-            self.msg = errorMapper.map(error: error)
-        }
+    private func handleError(error: CharacterDomainError?) {
+        self.loading = false
+        self.showAlert = true
+        self.msg = errorMapper.map(error: error)
     }
 }

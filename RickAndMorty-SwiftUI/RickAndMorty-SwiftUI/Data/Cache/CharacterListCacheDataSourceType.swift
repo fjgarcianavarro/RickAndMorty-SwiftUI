@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol CharacterListCacheDataSourceType {
+protocol CharacterListCacheDataSourceType: Sendable {
     func getCharacterList() async -> [CharacterEntity]
     func saveCharacterList(_ characterList: [CharacterEntity]) async
 }

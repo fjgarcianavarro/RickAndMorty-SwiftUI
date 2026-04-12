@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct LocationDTO: Codable {
+nonisolated struct LocationDTO: Codable {
     let name: String
     let url: String?
 }

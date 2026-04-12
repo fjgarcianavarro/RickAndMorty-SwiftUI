@@ -8,9 +8,9 @@
 import XCTest
 @testable import RickAndMorty_SwiftUI
 
-final class RemoteDataSourceTests: XCTestCase {
+nonisolated final class RemoteDataSourceTests: XCTestCase {
     /// Ensures that `getCharacters` succeeds when the HTTP client returns a valid response with character data.
-    func test_getCharacters_succeeds_when_httpclient_requests_succeeds_and_response_is_correct() async throws {
+    @MainActor func test_getCharacters_succeeds_when_httpclient_requests_succeeds_and_response_is_correct() async throws {
         // GIVEN
         let data = """
                 {
@@ -68,7 +68,7 @@ final class RemoteDataSourceTests: XCTestCase {
     }
     
     /// Ensures that `getCharacters` fails when the HTTP client request fails.
-    func test_getCharacters_fails_when_httpClient_request_fails() async {
+    @MainActor func test_getCharacters_fails_when_httpClient_request_fails() async {
         // GIVEN
         let sut = RemoteDataSource(httpClient: HTTPClientStub(result: .failure(.unknownError)))
         
@@ -85,7 +85,7 @@ final class RemoteDataSourceTests: XCTestCase {
     }
     
     /// Ensures that `getCharacters` returns an empty array when the response has no results.
-    func test_getCharacters_returns_emptyArray_when_httpclient_requests_succeeds_and_response_has_no_results() async throws {
+    @MainActor func test_getCharacters_returns_emptyArray_when_httpclient_requests_succeeds_and_response_has_no_results() async throws {
         // GIVEN
         let jsonData = """
             {
@@ -104,7 +104,7 @@ final class RemoteDataSourceTests: XCTestCase {
     }
     
     /// Ensures that `getCharacters` returns an empty array when the API returns an empty object.
-    func test_getCharacters_returns_emptyArray_when_response_is_empty() async throws {
+    @MainActor func test_getCharacters_returns_emptyArray_when_response_is_empty() async throws {
         // GIVEN
         let emptyData = """
             {}
@@ -121,7 +121,7 @@ final class RemoteDataSourceTests: XCTestCase {
     }
     
     /// Ensures that `getCharacters` handles missing fields gracefully and provides default values.
-    func test_getCharacters_handles_missing_fields_gracefully() async throws {
+    @MainActor func test_getCharacters_handles_missing_fields_gracefully() async throws {
         // GIVEN
         let dataWithMissingFields = """
             {
@@ -161,7 +161,7 @@ final class RemoteDataSourceTests: XCTestCase {
     }
     
     /// Ensures that `getCharacters` returns `.tooManyRequests` when the API rate limit is exceeded.
-    func test_getCharacters_fails_with_tooManyRequests_when_httpClient_returns_429() async {
+    @MainActor func test_getCharacters_fails_with_tooManyRequests_when_httpClient_returns_429() async {
         // GIVEN
         let sut = RemoteDataSource(httpClient: HTTPClientStub(result: .failure(.tooManyRequests)))
 

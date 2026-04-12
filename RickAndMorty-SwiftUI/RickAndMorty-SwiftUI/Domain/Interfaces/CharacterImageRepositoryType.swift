@@ -7,6 +7,6 @@
 
 import Foundation
 
-protocol CharacterImageRepositoryType {
+protocol CharacterImageRepositoryType: Sendable {
     func getImage(for url: URL) async -> Result<Data, CharacterImageError>
 }

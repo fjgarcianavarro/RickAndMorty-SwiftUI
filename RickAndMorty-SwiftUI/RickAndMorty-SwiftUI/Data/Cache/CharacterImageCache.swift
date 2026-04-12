@@ -7,19 +7,36 @@
 
 import Foundation
 
-final class CharacterImageCache {
-    private let cache = NSCache<NSURL, NSData>()
+enum ImageCacheLookup {
+    case hit(Data)
+    case inProgress(Task<Data?, Never>)
+    case registered
+}
 
-    init(countLimit: Int = 100, totalCostLimit: Int = 50 * 1024 * 1024) {
-        cache.countLimit = countLimit
-        cache.totalCostLimit = totalCostLimit
-    }
+actor CharacterImageCache: CharacterImageCacheType {
+    private let cache: NSCache<NSURL, NSData> = {
+        let cache = NSCache<NSURL, NSData>()
+        cache.countLimit = 100
+        cache.totalCostLimit = 50 * 1024 * 1024
+        return cache
+    }()
+    private var inProgress: [URL: Task<Data?, Never>] = [:]
 
-    func getImage(for url: URL) -> Data? {
-        return cache.object(forKey: url as NSURL) as? Data
-    }
+    init() {}
 
     func saveImage(_ data: Data, for url: URL) {
         cache.setObject(data as NSData, forKey: url as NSURL)
+        inProgress.removeValue(forKey: url)
+    }
+
+    func cachedOrRegister(for url: URL, task: Task<Data?, Never>) -> ImageCacheLookup {
+        if let data = cache.object(forKey: url as NSURL) as? Data {
+            return .hit(data)
+        }
+        if let existing = inProgress[url] {
+            return .inProgress(existing)
+        }
+        inProgress[url] = task
+        return .registered
     }
 }

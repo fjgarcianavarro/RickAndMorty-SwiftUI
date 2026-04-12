@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum HTTPClientError: Error {
+nonisolated enum HTTPClientError: Error {
     case clientError
     case decodingError
     case invalidURL

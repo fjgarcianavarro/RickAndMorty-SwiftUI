@@ -8,19 +8,19 @@
 import Foundation
 @testable import RickAndMorty_SwiftUI
 
-final class CharacterListStorageStub: CharacterListStorageType {
-    private(set) var insertedCharacters: [CharacterData] = []
-    private let fetchCharactersResult: [CharacterData]
-    
-    init(fetchCharactersResult: [CharacterData]) {
+final class CharacterListStorageStub: CharacterListStorageType, @unchecked Sendable {
+    private(set) var insertedCharacters: [CharacterStorageDTO] = []
+    private let fetchCharactersResult: [CharacterStorageDTO]
+
+    init(fetchCharactersResult: [CharacterStorageDTO]) {
         self.fetchCharactersResult = fetchCharactersResult
     }
-    
-    func fetchCharacters() async -> [CharacterData] {
+
+    func fetchCharacters() async -> [CharacterStorageDTO] {
         fetchCharactersResult
     }
-    
-    func insert(_ characters: [CharacterData]) async {
+
+    func insert(_ characters: [CharacterStorageDTO]) async {
         insertedCharacters = characters
     }
 }

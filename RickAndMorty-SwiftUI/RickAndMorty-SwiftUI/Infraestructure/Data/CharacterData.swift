@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-class CharacterData {
+nonisolated class CharacterData {
     @Attribute(.unique) var id: Int
     var name: String
     var status: String
@@ -22,16 +22,16 @@ class CharacterData {
     var episodes: [String]?
     var isDetailed: Bool
     
-    init(id: Int, name: String, status: CharacterStatus, species: String, type: String?, gender: CharacterGender, origin: LocationData, location: LocationData, imageURL: URL?, episodes: [String]?, isDetailed: Bool = false) {
+    init(id: Int, name: String, status: String, species: String, type: String?, gender: String, origin: LocationData, location: LocationData, imageURL: String?, episodes: [String]?, isDetailed: Bool = false) {
         self.id = id
         self.name = name
-        self.status = status.rawValue
+        self.status = status
         self.species = species
         self.type = type
-        self.gender = gender.rawValue
+        self.gender = gender
         self.origin = origin
         self.location = location
-        self.imageURL = imageURL?.absoluteString
+        self.imageURL = imageURL
         self.episodes = episodes
         self.isDetailed = isDetailed
     }
