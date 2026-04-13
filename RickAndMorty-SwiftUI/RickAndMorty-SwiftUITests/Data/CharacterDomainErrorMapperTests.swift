@@ -2,7 +2,7 @@
 //  CharacterDomainErrorMapperTests.swift
 //  RickAndMorty-SwiftUITests
 //
-//  Created by Francisco José Navarro García on 08.02.2025.
+//  Created by Francisco José García Navarro on 08.02.2025.
 //
 
 import XCTest

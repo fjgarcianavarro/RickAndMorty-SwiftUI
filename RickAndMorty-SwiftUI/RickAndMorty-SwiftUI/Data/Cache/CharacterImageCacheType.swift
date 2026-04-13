@@ -2,7 +2,7 @@
 //  CharacterImageCacheType.swift
 //  RickAndMorty-SwiftUI
 //
-//  Created by Francisco José Navarro García on 09.04.2026.
+//  Created by Francisco José García Navarro on 09.04.2026.
 //
 
 import Foundation

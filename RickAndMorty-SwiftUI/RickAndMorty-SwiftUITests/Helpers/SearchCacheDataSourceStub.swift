@@ -2,7 +2,7 @@
 //  SearchCacheDataSourceStub.swift
 //  RickAndMorty-SwiftUITests
 //
-//  Created by Francisco José Navarro García on 13.04.2026.
+//  Created by Francisco José García Navarro on 13.04.2026.
 //
 
 import Foundation

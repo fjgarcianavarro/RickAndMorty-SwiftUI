@@ -420,4 +420,4 @@ It has been kept up to date since then as a living reference for Clean Architect
 
 ## 👨‍💻 Author
 
-💡 _Developed by_ **Francisco José Navarro García**  
+💡 _Developed by_ **Francisco José García Navarro**  
