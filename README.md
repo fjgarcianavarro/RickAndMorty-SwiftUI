@@ -206,7 +206,7 @@ Extensions and utilities to support the application.
 
 ### Persistence Boundary (StorageDTO Pattern)
 
-The `@Model` classes (`CharacterData`, `LocationData`) are confined to the `ModelActor` and are not `Sendable`. To safely cross the actor boundary under Swift 6 strict concurrency:
+The `@Model` class `CharacterData` is confined to the `ModelActor` and is not `Sendable`. `LocationData` is a `Codable` struct stored inline within `CharacterData`, avoiding a separate table and preventing orphaned records on updates. To safely cross the actor boundary under Swift 6 strict concurrency:
 
 - **`CharacterStorageDTO` / `LocationStorageDTO`** are lightweight `Sendable` value types that carry the same data as `@Model` but can be passed freely between isolation domains.
 - **`CharacterDataStorageMapper`** converts `@Model ↔ StorageDTO` **inside** the `ModelActor`.
