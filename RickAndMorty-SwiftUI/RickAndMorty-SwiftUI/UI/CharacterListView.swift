@@ -35,7 +35,7 @@ struct CharacterListView: View {
                 } else {
                     if typeList == .list {
                         List(viewModel.characters) { character in
-                            NavigationLink(destination: createCharacterDetailView.create(character: character)) {
+                            NavigationLink(value: character) {
                                 CharacterListItemView(character: character,
                                                       downloadImageUseCase: viewModel.downloadImageUseCase)
                             }
@@ -44,7 +44,7 @@ struct CharacterListView: View {
                         ScrollView {
                             LazyVGrid(columns: [gridItem]) {
                                 ForEach(viewModel.characters) { character in
-                                    NavigationLink(destination: createCharacterDetailView.create(character: character)) {
+                                    NavigationLink(value: character) {
                                         CharacterGridItemView(character: character,
                                                               downloadImageUseCase: viewModel.downloadImageUseCase)
                                     }
@@ -62,6 +62,9 @@ struct CharacterListView: View {
             }
             .toolbar {
                 CharacterListTypeSwitcherView(typeList: $typeList)
+            }
+            .navigationDestination(for: CharacterPresentable.self) { character in
+                createCharacterDetailView.create(character: character)
             }
         }
         .task {

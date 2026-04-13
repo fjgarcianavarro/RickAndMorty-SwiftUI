@@ -398,6 +398,7 @@ xcodebuild -project RickAndMorty-SwiftUI.xcodeproj \
 ### Search & Cancellation
 
 - **`.searchable` + `onChange`**: Native SwiftUI integration with `NavigationStack`. The search bar appears idiomatically and the binding drives the entire search flow.
+- **Value-based navigation**: `NavigationLink(value:)` with `.navigationDestination(for:)` for lazy destination creation and decoupled navigation, replacing the legacy `NavigationLink(destination:)` pattern.
 - **Debounce (300ms)**: Each keystroke cancels the previous `Task` and starts a new one with a `Task.sleep` guard. This avoids firing a network request per character typed.
 - **Task cancellation**: `searchTask?.cancel()` before creating each new `Task` ensures in-flight URLSession requests are cancelled. A `guard !Task.isCancelled` check after the debounce and after the network call prevents stale results from appearing.
 - **Empty state**: `ContentUnavailableView` (iOS 17+) provides a native empty-results screen with system imagery.
