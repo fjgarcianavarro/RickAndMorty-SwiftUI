@@ -11,6 +11,7 @@ nonisolated enum HTTPClientError: Error {
     case clientError
     case decodingError
     case invalidURL
+    case notFound
     case responseError
     case serverError
     case tooManyRequests

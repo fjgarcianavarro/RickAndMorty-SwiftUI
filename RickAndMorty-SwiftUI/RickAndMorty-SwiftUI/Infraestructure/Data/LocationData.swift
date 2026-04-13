@@ -6,15 +6,8 @@
 //
 
 import Foundation
-import SwiftData
 
-@Model
-nonisolated final class LocationData {
+nonisolated struct LocationData: Codable {
     var name: String
     var url: String?
-
-    init(name: String, url: String?) {
-        self.name = name
-        self.url = url
-    }
 }
