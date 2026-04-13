@@ -18,4 +18,8 @@ final class CharacterListRemoteDataSourceStub: CharacterListRemoteDataSourceType
     func getCharacters() async -> Result<[CharacterDTO], HTTPClientError> {
         getCharacters
     }
+
+    func searchCharacters(name: String) async -> Result<[CharacterDTO], HTTPClientError> {
+        getCharacters
+    }
 }

@@ -73,9 +73,10 @@ nonisolated final class CompositeCharacterListCacheDataSourceTests: XCTestCase {
         _ = await sut.getCharacterList()
         
         // THEN
-        XCTAssertEqual(temporalCache.cachedCharacterList, characterList)
+        let temporalCached = await temporalCache.cachedCharacterList
+        XCTAssertEqual(temporalCached, characterList)
     }
-    
+
     /// Ensures that `saveCharacterList` stores the list in both the temporal and persistence caches.
     @MainActor func test_saveCharacterList_saves_in_temporal_and_persistence_cache() async {
         // GIVEN
@@ -90,10 +91,12 @@ nonisolated final class CompositeCharacterListCacheDataSourceTests: XCTestCase {
         await sut.saveCharacterList(characterList)
         
         // THEN
-        XCTAssertEqual(temporalCache.cachedCharacterList, characterList)
-        XCTAssertEqual(persistenceCache.cachedCharacterList, characterList)
+        let temporalCached = await temporalCache.cachedCharacterList
+        let persistenceCached = await persistenceCache.cachedCharacterList
+        XCTAssertEqual(temporalCached, characterList)
+        XCTAssertEqual(persistenceCached, characterList)
     }
-    
+
     /// Ensures that `saveCharacterList` stores an empty list in both the temporal and persistence caches.
     @MainActor func test_saveCharacterList_saves_empty_array_in_temporal_and_persistence_cache() async {
         // GIVEN
@@ -108,8 +111,10 @@ nonisolated final class CompositeCharacterListCacheDataSourceTests: XCTestCase {
         await sut.saveCharacterList(emptyCharacterList)
         
         // THEN
-        XCTAssertEqual(temporalCache.cachedCharacterList, [])
-        XCTAssertEqual(persistenceCache.cachedCharacterList, [])
+        let temporalCached = await temporalCache.cachedCharacterList
+        let persistenceCached = await persistenceCache.cachedCharacterList
+        XCTAssertEqual(temporalCached, [])
+        XCTAssertEqual(persistenceCached, [])
     }
     
     /// Ensures that `getCharacterList` returns data from the persistence cache when the temporal cache is empty.

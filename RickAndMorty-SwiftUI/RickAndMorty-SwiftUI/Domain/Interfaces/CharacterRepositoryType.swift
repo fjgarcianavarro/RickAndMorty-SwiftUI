@@ -9,4 +9,5 @@ import Foundation
 
 protocol CharacterRepositoryType: Sendable {
     func getCharacters() async -> Result<[CharacterEntity], CharacterDomainError>
+    func searchCharacters(name: String) async -> Result<[CharacterEntity], CharacterDomainError>
 }

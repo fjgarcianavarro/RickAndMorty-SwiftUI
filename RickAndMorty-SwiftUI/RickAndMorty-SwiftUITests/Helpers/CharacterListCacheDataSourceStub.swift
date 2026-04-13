@@ -8,7 +8,7 @@
 import Foundation
 @testable import RickAndMorty_SwiftUI
 
-final class CharacterListCacheDataSourceStub: CharacterListCacheDataSourceType, @unchecked Sendable {
+actor CharacterListCacheDataSourceStub: CharacterListCacheDataSourceType {
     private let getCharacterList: [CharacterEntity]
     var cachedCharacterList: [CharacterEntity]?
     

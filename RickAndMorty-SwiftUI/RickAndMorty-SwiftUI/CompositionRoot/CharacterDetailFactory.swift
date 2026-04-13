@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-final class CharacterDetailFactory: CreateCharacterDetailView {
+final class CharacterDetailFactory: CharacterDetailViewFactory {
     private let container: DependencyContainer
 
     init(container: DependencyContainer) {
@@ -53,7 +53,7 @@ final class CharacterDetailFactory: CreateCharacterDetailView {
     }
 
     private func createHttpClient() -> HTTPClient {
-        URLSessionHTTPCLient(requestMaker: URLSessionRequestMaker(),
+        URLSessionHTTPClient(requestMaker: URLSessionRequestMaker(),
                              errorResolver: URLSessionErrorResolver())
     }
 }

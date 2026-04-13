@@ -8,7 +8,7 @@
 import Foundation
 @testable import RickAndMorty_SwiftUI
 
-final class CharacterListStorageStub: CharacterListStorageType, @unchecked Sendable {
+actor CharacterListStorageStub: CharacterListStorageType {
     private(set) var insertedCharacters: [CharacterStorageDTO] = []
     private let fetchCharactersResult: [CharacterStorageDTO]
 

@@ -14,7 +14,7 @@ nonisolated final class CharacterRepositoryTests: XCTestCase {
         // GIVEN
         let expectedCharacterList = CharacterEntityTestData.makeCharacterList()
 
-        let (sut, _) = makeSUT(remoteDataSourceResult: .success([]),
+        let (sut, _, _) = makeSUT(remoteDataSourceResult: .success([]),
                                cachedValue: expectedCharacterList)
 
         // WHEN
@@ -30,7 +30,7 @@ nonisolated final class CharacterRepositoryTests: XCTestCase {
         // GIVEN
         let expectedCharacterList = CharacterEntityTestData.makeCharacterList()
 
-        let (sut, _) = makeSUT(remoteDataSourceResult: .success(CharacterDTOTestData.makeCharacterList()),
+        let (sut, _, _) = makeSUT(remoteDataSourceResult: .success(CharacterDTOTestData.makeCharacterList()),
                                cachedValue: [])
 
         // WHEN
@@ -46,14 +46,15 @@ nonisolated final class CharacterRepositoryTests: XCTestCase {
         // GIVEN
         let expectedCharacterList = CharacterEntityTestData.makeCharacterList()
 
-        let (sut, cacheDataSource) = makeSUT(remoteDataSourceResult: .success(CharacterDTOTestData.makeCharacterList()),
+        let (sut, cacheDataSource, _) = makeSUT(remoteDataSourceResult: .success(CharacterDTOTestData.makeCharacterList()),
                                              cachedValue: [])
 
         // WHEN
         _ = await sut.getCharacters()
 
         // THEN
-        XCTAssertEqual(cacheDataSource.cachedCharacterList, expectedCharacterList)
+        let cached = await cacheDataSource.cachedCharacterList
+        XCTAssertEqual(cached, expectedCharacterList)
     }
 
     /// Ensures that `getCharacters` correctly maps all HTTPClientError cases to CharacterDomainError.
@@ -70,7 +71,7 @@ nonisolated final class CharacterRepositoryTests: XCTestCase {
         ]
 
         for (httpError, expectedDomainError) in errorsToTest {
-            let (sut, _) = makeSUT(remoteDataSourceResult: .failure(httpError),
+            let (sut, _, _) = makeSUT(remoteDataSourceResult: .failure(httpError),
                                    cachedValue: [])
 
             // WHEN
@@ -89,7 +90,7 @@ nonisolated final class CharacterRepositoryTests: XCTestCase {
     /// Ensures that when both cache and API return an empty list, the method returns an empty list successfully.
     @MainActor func test_getCharacters_returns_empty_array_when_cache_is_empty_and_apiDataSource_returns_empty() async throws {
         // GIVEN
-        let (sut, _) = makeSUT(remoteDataSourceResult: .success([]),
+        let (sut, _, _) = makeSUT(remoteDataSourceResult: .success([]),
                                cachedValue: [])
 
         // WHEN
@@ -103,7 +104,7 @@ nonisolated final class CharacterRepositoryTests: XCTestCase {
     /// Ensures that when the API fails with a `tooManyRequests` error, the repository correctly maps and returns that error.
     @MainActor func test_getCharacters_returns_tooManyRequests_error_when_apiDataSource_fails_with_tooManyRequests() async {
         // GIVEN
-        let (sut, _) = makeSUT(remoteDataSourceResult: .failure(.tooManyRequests),
+        let (sut, _, _) = makeSUT(remoteDataSourceResult: .failure(.tooManyRequests),
                                cachedValue: [])
 
         // WHEN
@@ -138,7 +139,7 @@ nonisolated final class CharacterRepositoryTests: XCTestCase {
             episodes: []
         )
 
-        let (sut, _) = makeSUT(remoteDataSourceResult: .success(characterWithNilValues),
+        let (sut, _, _) = makeSUT(remoteDataSourceResult: .success(characterWithNilValues),
                                cachedValue: [])
 
         // WHEN
@@ -152,15 +153,18 @@ nonisolated final class CharacterRepositoryTests: XCTestCase {
 
 extension CharacterRepositoryTests {
     @MainActor private func makeSUT(remoteDataSourceResult: Result<[CharacterDTO], HTTPClientError>,
-                                     cachedValue: [CharacterEntity]) -> (sut: CharacterRepository, cache: CharacterListCacheDataSourceStub) {
+                                     cachedValue: [CharacterEntity],
+                                     searchCachedResult: [CharacterEntity]? = nil) -> (sut: CharacterRepository, cache: CharacterListCacheDataSourceStub, searchCache: SearchCacheDataSourceStub) {
         let remoteDataSource = CharacterListRemoteDataSourceStub(getCharacters: remoteDataSourceResult)
         let cacheDataSource = CharacterListCacheDataSourceStub(getCharacterList: cachedValue)
+        let searchCacheDataSource = SearchCacheDataSourceStub(cachedResult: searchCachedResult)
 
         let sut = CharacterRepository(characterRemoteDataSource: remoteDataSource,
                                       domainMapper: CharacterDomainMapper(),
                                       errorMapper: CharacterDomainErrorMapper(),
-                                      cacheDatasource: cacheDataSource)
+                                      cacheDatasource: cacheDataSource,
+                                      searchCache: searchCacheDataSource)
 
-        return (sut, cacheDataSource)
+        return (sut, cacheDataSource, searchCacheDataSource)
     }
 }

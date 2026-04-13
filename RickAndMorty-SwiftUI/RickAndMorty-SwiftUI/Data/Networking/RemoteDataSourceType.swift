@@ -9,6 +9,7 @@ import Foundation
 
 protocol CharacterListRemoteDataSourceType: Sendable {
     func getCharacters() async -> Result<[CharacterDTO], HTTPClientError>
+    func searchCharacters(name: String) async -> Result<[CharacterDTO], HTTPClientError>
 }
 
 protocol CharacterImageRemoteDataSourceType: Sendable {

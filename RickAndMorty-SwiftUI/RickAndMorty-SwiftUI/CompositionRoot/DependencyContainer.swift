@@ -7,10 +7,11 @@
 
 import Foundation
 
-final class DependencyContainer {
+final class DependencyContainer: Sendable {
     let characterImageCache: CharacterImageCacheType
     let inMemoryCharacterListCache: CharacterListCacheDataSourceType
     let inMemoryCharacterCache: CharacterCacheDataSourceType
+    let searchCache: SearchCacheDataSourceType
     let characterListStorage: CharacterListStorageType
     let characterStorage: CharacterStorageType
     let storageDTOMapper: CharacterStorageDTOMapper
@@ -18,12 +19,14 @@ final class DependencyContainer {
     init(characterImageCache: CharacterImageCacheType,
          inMemoryCharacterListCache: CharacterListCacheDataSourceType,
          inMemoryCharacterCache: CharacterCacheDataSourceType,
+         searchCache: SearchCacheDataSourceType,
          characterListStorage: CharacterListStorageType,
          characterStorage: CharacterStorageType,
          storageDTOMapper: CharacterStorageDTOMapper) {
         self.characterImageCache = characterImageCache
         self.inMemoryCharacterListCache = inMemoryCharacterListCache
         self.inMemoryCharacterCache = inMemoryCharacterCache
+        self.searchCache = searchCache
         self.characterListStorage = characterListStorage
         self.characterStorage = characterStorage
         self.storageDTOMapper = storageDTOMapper
@@ -35,6 +38,7 @@ final class DependencyContainer {
             characterImageCache: CharacterImageCache(),
             inMemoryCharacterListCache: InMemoryCharacterListCacheDataSource(),
             inMemoryCharacterCache: InMemoryCharacterCacheDataSource(),
+            searchCache: TTLInMemorySearchCacheDataSource(),
             characterListStorage: CharacterListStorage(
                 modelContainer: SharedModelContainer.instance,
                 mapper: dataStorageMapper),

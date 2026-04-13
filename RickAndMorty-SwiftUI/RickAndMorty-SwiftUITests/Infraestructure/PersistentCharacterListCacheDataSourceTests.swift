@@ -50,7 +50,8 @@ nonisolated final class PersistentCharacterListCacheDataSourceTests: XCTestCase 
         await sut.saveCharacterList(emptyCharacterList)
 
         // THEN
-        XCTAssertEqual(storageStub.insertedCharacters.count, 0)
+        let insertedCount = await storageStub.insertedCharacters.count
+        XCTAssertEqual(insertedCount, 0)
     }
 }
 

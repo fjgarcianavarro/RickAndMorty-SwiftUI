@@ -15,8 +15,13 @@ final class CharacterListFactory {
 
     private static func createViewModel(container: DependencyContainer) -> CharacterListViewModel {
         CharacterListViewModel(getAllCharactersUseCase: createUseCase(container: container),
+                               searchCharactersUseCase: createSearchUseCase(container: container),
                                downloadImageUseCase: createDownloadImageUseCase(container: container),
                                errorMapper: CharacterPresentableErrorMapper())
+    }
+
+    private static func createSearchUseCase(container: DependencyContainer) -> SearchCharactersUseCaseType {
+        SearchCharactersUseCase(repository: createRepository(container: container))
     }
 
     private static func createUseCase(container: DependencyContainer) -> GetAllCharactersUseCaseType {
@@ -27,7 +32,8 @@ final class CharacterListFactory {
         CharacterRepository(characterRemoteDataSource: RemoteDataSource(httpClient: createHttpClient()),
                             domainMapper: CharacterDomainMapper(),
                             errorMapper: CharacterDomainErrorMapper(),
-                            cacheDatasource: createCacheDataSource(container: container))
+                            cacheDatasource: createCacheDataSource(container: container),
+                            searchCache: container.searchCache)
     }
 
     private static func createCacheDataSource(container: DependencyContainer) -> CharacterListCacheDataSourceType {
@@ -47,7 +53,7 @@ final class CharacterListFactory {
     }
 
     private static func createHttpClient() -> HTTPClient {
-        URLSessionHTTPCLient(requestMaker: URLSessionRequestMaker(),
+        URLSessionHTTPClient(requestMaker: URLSessionRequestMaker(),
                              errorResolver: URLSessionErrorResolver())
     }
 }

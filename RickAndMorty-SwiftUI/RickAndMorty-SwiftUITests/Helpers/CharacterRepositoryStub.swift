@@ -18,4 +18,8 @@ final class CharacterRepositoryStub: CharacterRepositoryType {
     func getCharacters() async -> Result<[CharacterEntity], CharacterDomainError> {
         result
     }
+
+    func searchCharacters(name: String) async -> Result<[CharacterEntity], CharacterDomainError> {
+        result
+    }
 }

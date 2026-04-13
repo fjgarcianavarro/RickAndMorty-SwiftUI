@@ -10,13 +10,13 @@ import SwiftUI
 struct CharacterListView: View {
     @ObservedObject private var viewModel: CharacterListViewModel
     
-    private let createCharacterDetailView: CreateCharacterDetailView
+    private let createCharacterDetailView: CharacterDetailViewFactory
     
     let gridItem = GridItem(.adaptive(minimum: 150), alignment: .center)
     
     @State var typeList: CharacterListDisplayMode = .list
     
-    init(viewModel: CharacterListViewModel, createCharacterDetailView: CreateCharacterDetailView) {
+    init(viewModel: CharacterListViewModel, createCharacterDetailView: CharacterDetailViewFactory) {
         self.viewModel = viewModel
         self.createCharacterDetailView = createCharacterDetailView
     }
@@ -26,6 +26,12 @@ struct CharacterListView: View {
             Group {
                 if viewModel.loading {
                     CharacterListLoadingView()
+                } else if viewModel.characters.isEmpty {
+                    ContentUnavailableView(
+                        "No characters found",
+                        systemImage: "person.slash",
+                        description: Text("Try a different search term")
+                    )
                 } else {
                     if typeList == .list {
                         List(viewModel.characters) { character in
@@ -50,6 +56,10 @@ struct CharacterListView: View {
                 }
             }
             .navigationTitle(Text("Rick and Morty", comment: "Navigation bar title for the character list screen."))
+            .searchable(text: $viewModel.searchText, prompt: "Search characters")
+            .onChange(of: viewModel.searchText) { _, newValue in
+                viewModel.onSearchTextChanged(newValue)
+            }
             .toolbar {
                 CharacterListTypeSwitcherView(typeList: $typeList)
             }
