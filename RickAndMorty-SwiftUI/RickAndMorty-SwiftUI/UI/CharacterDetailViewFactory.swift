@@ -1,0 +1,12 @@
+//
+//  CharacterDetailViewFactory.swift
+//  RickAndMorty-SwiftUI
+//
+//  Created by Francisco José García Navarro on 13.02.2025.
+//
+
+import SwiftUI
+
+protocol CharacterDetailViewFactory {
+    func create(character: CharacterPresentable) -> CharacterDetailView
+}

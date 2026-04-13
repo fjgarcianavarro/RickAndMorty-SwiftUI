@@ -2,7 +2,7 @@
 //  CharacterListView.swift
 //  RickAndMorty-SwiftUI
 //
-//  Created by Francisco José Navarro García on 01.02.2025.
+//  Created by Francisco José García Navarro on 01.02.2025.
 //
 
 import SwiftUI
@@ -10,13 +10,13 @@ import SwiftUI
 struct CharacterListView: View {
     @ObservedObject private var viewModel: CharacterListViewModel
     
-    private let createCharacterDetailView: CreateCharacterDetailView
+    private let createCharacterDetailView: CharacterDetailViewFactory
     
     let gridItem = GridItem(.adaptive(minimum: 150), alignment: .center)
     
     @State var typeList: CharacterListDisplayMode = .list
     
-    init(viewModel: CharacterListViewModel, createCharacterDetailView: CreateCharacterDetailView) {
+    init(viewModel: CharacterListViewModel, createCharacterDetailView: CharacterDetailViewFactory) {
         self.viewModel = viewModel
         self.createCharacterDetailView = createCharacterDetailView
     }
@@ -26,6 +26,12 @@ struct CharacterListView: View {
             Group {
                 if viewModel.loading {
                     CharacterListLoadingView()
+                } else if viewModel.characters.isEmpty {
+                    ContentUnavailableView(
+                        "No characters found",
+                        systemImage: "person.slash",
+                        description: Text("Try a different search term")
+                    )
                 } else {
                     if typeList == .list {
                         List(viewModel.characters) { character in
@@ -50,15 +56,19 @@ struct CharacterListView: View {
                 }
             }
             .navigationTitle(Text("Rick and Morty", comment: "Navigation bar title for the character list screen."))
+            .searchable(text: $viewModel.searchText, prompt: "Search characters")
+            .onChange(of: viewModel.searchText) { _, newValue in
+                viewModel.onSearchTextChanged(newValue)
+            }
             .toolbar {
                 CharacterListTypeSwitcherView(typeList: $typeList)
             }
         }
-        .onAppear {
-            viewModel.onAppear()
+        .task {
+            await viewModel.fetchCharacters()
         }
         .refreshable {
-            viewModel.refreshData()
+            await viewModel.refreshData()
         }
         .customAlert(message: viewModel.msg, showAlert: $viewModel.showAlert)
     }
@@ -66,28 +76,28 @@ struct CharacterListView: View {
 
 #Preview ("Light mode - EN"){
     CharacterListView(viewModel: .preview,
-                      createCharacterDetailView: CharacterDetailFactory())
+                      createCharacterDetailView: CharacterDetailFactory(container: DependencyContainer()))
     .preferredColorScheme(.light)
     .environment(\.locale, Locale(identifier: "en"))
 }
 
 #Preview ("Dark mode - EN"){
     CharacterListView(viewModel: .preview,
-                      createCharacterDetailView: CharacterDetailFactory())
+                      createCharacterDetailView: CharacterDetailFactory(container: DependencyContainer()))
     .preferredColorScheme(.dark)
     .environment(\.locale, Locale(identifier: "en"))
 }
 
 #Preview ("Light mode - ES"){
     CharacterListView(viewModel: .preview,
-                      createCharacterDetailView: CharacterDetailFactory())
+                      createCharacterDetailView: CharacterDetailFactory(container: DependencyContainer()))
     .preferredColorScheme(.light)
     .environment(\.locale, Locale(identifier: "es"))
 }
 
 #Preview ("Dark mode - ES"){
     CharacterListView(viewModel: .preview,
-                      createCharacterDetailView: CharacterDetailFactory())
+                      createCharacterDetailView: CharacterDetailFactory(container: DependencyContainer()))
     .preferredColorScheme(.dark)
     .environment(\.locale, Locale(identifier: "es"))
 }

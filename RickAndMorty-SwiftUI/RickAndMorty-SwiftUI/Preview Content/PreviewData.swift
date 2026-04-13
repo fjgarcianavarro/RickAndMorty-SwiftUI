@@ -2,7 +2,7 @@
 //  PreviewData.swift
 //  RickAndMorty-SwiftUI
 //
-//  Created by Francisco José Navarro García on 01.02.2025.
+//  Created by Francisco José García Navarro on 01.02.2025.
 //
 
 import Foundation
@@ -19,12 +19,17 @@ extension CharacterDetailViewModel {
 }
 
 extension CharacterListViewModel {
-    static let preview = CharacterListViewModel(getAllCharactersUseCase: GetAllCharactersUseCase(repository: CharacterRepository(characterRemoteDataSource: CharacterRemoteDataSourcePreview(),
-                                                                                                                                 domainMapper: CharacterDomainMapper(),
-                                                                                                                                 errorMapper: CharacterDomainErrorMapper(),
-                                                                                                                                 cacheDatasource: CharacterListCacheDataSourcePreview())),
-                                                downloadImageUseCase: DownloadCharacterImageUseCasePreview(),
-                                                errorMapper: CharacterPresentableErrorMapper())
+    static let preview: CharacterListViewModel = {
+        let repository = CharacterRepository(characterRemoteDataSource: CharacterRemoteDataSourcePreview(),
+                                              domainMapper: CharacterDomainMapper(),
+                                              errorMapper: CharacterDomainErrorMapper(),
+                                              cacheDatasource: CharacterListCacheDataSourcePreview(),
+                                              searchCache: TTLInMemorySearchCacheDataSource())
+        return CharacterListViewModel(getAllCharactersUseCase: GetAllCharactersUseCase(repository: repository),
+                                      searchCharactersUseCase: SearchCharactersUseCase(repository: repository),
+                                      downloadImageUseCase: DownloadCharacterImageUseCasePreview(),
+                                      errorMapper: CharacterPresentableErrorMapper())
+    }()
 }
 
 extension CharacterPresentable {
@@ -88,6 +93,7 @@ final class CharacterDetailRemoteDataSourcePreview: CharacterDetailRemoteDataSou
 
 final class CharacterRemoteDataSourcePreview: CharacterListRemoteDataSourceType {
     func getCharacters() async -> Result<[CharacterDTO], HTTPClientError> { .success([]) }
+    func searchCharacters(name: String) async -> Result<[CharacterDTO], HTTPClientError> { .success([]) }
 }
 
 final class DownloadCharacterImageUseCasePreview: DownloadCharacterImageUseCaseType {

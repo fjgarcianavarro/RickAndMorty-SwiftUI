@@ -19,6 +19,9 @@ Additionally, the app uses **SwiftData** for local storage and **NSCache** for i
 |----------------|----------------|----------------|
 | <a href="https://github.com/user-attachments/assets/ef754ffd-06f1-4144-9455-3bad7b01827c" target="_blank"><img src="https://github.com/user-attachments/assets/ef754ffd-06f1-4144-9455-3bad7b01827c" width="400"></a> | <a href="https://github.com/user-attachments/assets/4d9e19b9-b04a-4110-aa50-eaa50107fafd" target="_blank"><img src="https://github.com/user-attachments/assets/4d9e19b9-b04a-4110-aa50-eaa50107fafd" width="400"></a> | <a href="https://github.com/user-attachments/assets/4ca2de26-cb09-4dc2-bc1b-5d4616b5949e" target="_blank"><img src="https://github.com/user-attachments/assets/4ca2de26-cb09-4dc2-bc1b-5d4616b5949e" width="400"></a> |
 
+| App Screenshots | App Screenshots |
+|----------------|----------------|
+| <a href="https://github.com/user-attachments/assets/53f43f93-62b4-4a2d-9384-ab196de63828" target="_blank"><img src="https://github.com/user-attachments/assets/53f43f93-62b4-4a2d-9384-ab196de63828" width="400"></a> | <a href="https://github.com/user-attachments/assets/a1aea65d-e9b4-4d01-89e4-057d94b7ba18" target="_blank"><img src="https://github.com/user-attachments/assets/a1aea65d-e9b4-4d01-89e4-057d94b7ba18" width="400"></a> |
 
 
 | Code Coverage | SQLite Data (CoreData Cache) |
@@ -46,15 +49,19 @@ RickAndMorty-SwiftUI/
 │── CompositionRoot/
 │   ├── CharacterDetailFactory.swift
 │   ├── CharacterListFactory.swift
+│   ├── DependencyContainer.swift
 │── Data/
 │   ├── Cache/
 │   │   ├── CharacterCacheDataSourceType.swift
 │   │   ├── CharacterImageCache.swift
+│   │   ├── CharacterImageCacheType.swift
 │   │   ├── CharacterListCacheDataSourceType.swift
 │   │   ├── CompositeCharacterCacheDataSource.swift
 │   │   ├── CompositeCharacterListCacheDataSource.swift
 │   │   ├── InMemoryCharacterCacheDataSource.swift
 │   │   ├── InMemoryCharacterListCacheDataSource.swift
+│   │   ├── SearchCacheDataSourceType.swift
+│   │   ├── TTLInMemorySearchCacheDataSource.swift
 │   ├── DTOs/
 │   │   ├── CharacterDTO.swift
 │   │   ├── CharacterResponseDTO.swift
@@ -87,18 +94,20 @@ RickAndMorty-SwiftUI/
 │   │   ├── DownloadCharacterImageUseCase.swift
 │   │   ├── GetAllCharactersUseCase.swift
 │   │   ├── GetCharacterDetailUseCase.swift
+│   │   ├── SearchCharactersUseCase.swift
 │   ├── CharacterDomainError.swift
 │   ├── CharacterImageError.swift
 │── Infraestructure/
 │   ├── Data/
 │   │   ├── CharacterData.swift
-│   │   ├── CharacterDataMapper.swift
+│   │   ├── CharacterDataStorageMapper.swift
 │   │   ├── CharacterListStorage.swift
 │   │   ├── CharacterListStorageType.swift
 │   │   ├── CharacterStorage.swift
+│   │   ├── CharacterStorageDTO.swift
+│   │   ├── CharacterStorageDTOMapper.swift
 │   │   ├── CharacterStorageType.swift
 │   │   ├── LocationData.swift
-│   │   ├── LocationDataMapper.swift
 │   │   ├── PersistentCharacterCacheDataSource.swift
 │   │   ├── PersistentCharacterListCacheDataSource.swift
 │   ├── Networking/
@@ -129,6 +138,7 @@ RickAndMorty-SwiftUI/
 │   │   ├── CharacterListLoadingView.swift
 │   │   ├── CharacterListTypeSwitcherView.swift
 │   ├── CharacterDetailView.swift
+│   ├── CharacterDetailViewFactory.swift
 │   ├── CharacterListView.swift
 │   ├── Image+Styles.swift
 │   ├── Font+Styles.swift
@@ -142,11 +152,16 @@ RickAndMorty-SwiftUI/
 │   ├── Data/
 │   │   ├── CharacterDomainErrorMapperTests.swift
 │   │   ├── CharacterDomainMapperTests.swift
+│   │   ├── CharacterRepositorySearchTests.swift
 │   │   ├── CharacterRepositoryTests.swift
 │   │   ├── CompositeCharacterListCacheDataSourceTests.swift
 │   │   ├── RemoteDataSourceTests.swift
+│   │   ├── TTLInMemorySearchCacheDataSourceTests.swift
 │   ├── Domain/
 │   │   ├── GetAllCharactersUseCaseTests.swift
+│   │   ├── SearchCharactersUseCaseTests.swift
+│   ├── Presentation/
+│   │   ├── CharacterListViewModelTests.swift
 │   ├── Helpers/
 │   │   ├── CharacterDTOTestData.swift
 │   │   ├── CharacterDataTestData.swift
@@ -155,13 +170,17 @@ RickAndMorty-SwiftUI/
 │   │   ├── CharacterListRemoteDataSourceStub.swift
 │   │   ├── CharacterListStorageStub.swift
 │   │   ├── CharacterRepositoryStub.swift
+│   │   ├── CharacterStorageDTOTestData.swift
+│   │   ├── DownloadCharacterImageUseCaseStub.swift
 │   │   ├── Equatable.swift
 │   │   ├── GetAllCharactersUseCaseStub.swift
 │   │   ├── HTTPClientStub.swift
+│   │   ├── SearchCacheDataSourceStub.swift
+│   │   ├── SearchCharactersUseCaseStub.swift
 │   ├── Infraestructure/
 │   │   ├── PersistentCharacterListCacheDataSourceTests.swift
 │   ├── Utils/
-│   │   ├── Foundation+Extensions.swift
+│   │   ├── ResultExtensionTests.swift
 ```
 
 ✅ **Composition Root (`CompositionRoot`)**  
@@ -184,6 +203,16 @@ SwiftUI components that structure the user interface.
 
 ✅ **Utils (`Utils`)**  
 Extensions and utilities to support the application.
+
+### Persistence Boundary (StorageDTO Pattern)
+
+The `@Model` class `CharacterData` is confined to the `ModelActor` and is not `Sendable`. `LocationData` is a `Codable` struct stored inline within `CharacterData`, avoiding a separate table and preventing orphaned records on updates. To safely cross the actor boundary under Swift 6 strict concurrency:
+
+- **`CharacterStorageDTO` / `LocationStorageDTO`** are lightweight `Sendable` value types that carry the same data as `@Model` but can be passed freely between isolation domains.
+- **`CharacterDataStorageMapper`** converts `@Model ↔ StorageDTO` **inside** the `ModelActor`.
+- **`CharacterStorageDTOMapper`** converts `StorageDTO ↔ Entity` **outside** the actor, at the persistence boundary.
+
+This two-step mapping keeps `@Model` types safely isolated while giving the rest of the architecture `Sendable` data to work with.
 
 ---
 
@@ -248,24 +277,39 @@ Additionally:
 
 ```swift
 #Preview {
-    CharacterListView(viewModel: .preview)
+    CharacterListView(viewModel: .preview,
+                      createCharacterDetailView: CharacterDetailFactory(container: DependencyContainer()))
         .environment(\.locale, .init(identifier: "es")) // Example for Spanish preview
 }
 ```
 
 ---
 
+## 🧵 Concurrency Model
+
+The project targets **Swift 6 with complete strict concurrency checking** (`SWIFT_STRICT_CONCURRENCY = complete`) and adopts the **approachable concurrency** upcoming features (`SWIFT_APPROACHABLE_CONCURRENCY = YES`, which enables `NonisolatedNonsendingByDefault`).
+
+Key architectural decisions driven by this choice:
+
+- ✅ **Data-layer protocols explicitly conform to `Sendable`** (`CharacterCacheDataSourceType`, `CharacterRepositoryType`, …). This is a defensive contract: under `NonisolatedNonsendingByDefault`, `async` methods inherit the caller's isolation, so the compiler may not enforce `Sendable` today because the entire repository chain currently runs on `@MainActor`. Declaring it explicitly keeps the architecture safe the moment any caller introduces `Task.detached` or a non-main-actor context.
+- ✅ **Mutable caches are modeled as `actor` types** (`InMemoryCharacterCacheDataSource`, `InMemoryCharacterListCacheDataSource`, `CharacterImageCache`), guaranteeing serialized access to shared state without locks.
+- ✅ **SwiftData persistence uses `ModelActor`** (`CharacterStorage`, `CharacterListStorage`), isolating `ModelContext` in its own actor as Apple recommends.
+- ✅ **ViewModels are `@MainActor`-isolated**, and the asynchronous chain from view model → use case → repository → cache runs without unnecessary hops thanks to `NonisolatedNonsendingByDefault`.
+
+---
+
 ## 🛠 Technologies and Tools
 
-- ✅ **Swift 5.9+**
+- ✅ **Swift 6.0 with complete strict concurrency**
 - ✅ **SwiftUI**
-- ✅ **Async/Await for concurrency**
+- ✅ **Async/Await, actors, and approachable concurrency (`NonisolatedNonsendingByDefault`)**
 - ✅ **Clean Architecture + SOLID**
 - ✅ **URLSession for networking**
 - ✅ **NSCache for image caching**
 - ✅ **SwiftData for local storage**
 - ✅ **ViewModifiers for UI customization**
 - ✅ **Dependency Injection**
+- ✅ **XCTest** for unit testing across all architecture layers
 
 ---
 
@@ -287,9 +331,11 @@ The application supports multiple languages (English and Spanish) using Apple’
 This application consumes the **Rick and Morty API**:
 🔗 [https://rickandmortyapi.com](https://rickandmortyapi.com)
 
-📌 **Example request to fetch characters:**
+📌 **Endpoints used:**
 ```http
-GET https://rickandmortyapi.com/api/character
+GET https://rickandmortyapi.com/api/character          # List all characters
+GET https://rickandmortyapi.com/api/character?name=rick # Search characters by name
+GET https://rickandmortyapi.com/api/character/{id}      # Character detail
 ```
 
 ---
@@ -297,6 +343,8 @@ GET https://rickandmortyapi.com/api/character
 ## 🎯 Key Features
 
 - ✅ **Character list with cached images**
+- ✅ **Search characters by name** with `.searchable`, debounce (300ms), and automatic task cancellation
+- ✅ **In-memory search cache with TTL** (2-minute expiration, keyed by normalized query)
 - ✅ **Efficient image caching with `NSCache`**
 - ✅ **Local storage with `SwiftData`**
 - ✅ **Error handling with `Result<T, Error>`**
@@ -305,7 +353,8 @@ GET https://rickandmortyapi.com/api/character
 - ✅ **Character detail screen displaying key information**
 - ✅ **Custom fonts and reusable UI components for better design consistency**
 - ✅ **Modular and scalable architecture following Clean Architecture & SOLID principles**
-- ✅ **Unit tests covering all use cases (except UI tests and character detail fetching, planned for future updates)**
+- ✅ **Unit tests covering all layers: use cases, repositories, cache, search flow, and presentation (ViewModels)**
+- ✅ **Presentation layer fully tested** with injectable debounce for deterministic ViewModel testing
 - ✅ **Interactive SwiftUI previews for all views, supporting different modes and languages**  
 
 ---
@@ -315,22 +364,62 @@ GET https://rickandmortyapi.com/api/character
 1. **Clone the repository**  
    ```bash
    git clone https://github.com/your-username/RickAndMorty-SwiftUI.git
+   cd RickAndMorty-SwiftUI
    ```
-   
-    ```bash
-    cd RickAndMorty-SwiftUI
-    ```
 2. **Open in Xcode**  
    📂 Open `RickAndMorty_SwiftUI.xcodeproj` in Xcode.
 3. **Build and Run**  
    - 📱 **Select a simulator or physical device**
-   - ▶️ **Press "Run" (⌘R) in Xcode**  
+   - ▶️ **Press "Run" (⌘R) in Xcode**
+
+#### Command-line build & test
+
+```bash
+# Build
+xcodebuild -project RickAndMorty-SwiftUI.xcodeproj \
+  -scheme RickAndMorty-SwiftUI -configuration Debug build
+
+# Run all tests
+xcodebuild -project RickAndMorty-SwiftUI.xcodeproj \
+  -scheme RickAndMorty-SwiftUI \
+  -destination 'platform=iOS Simulator,name=iPhone 16' test
+
+# Run a single test class
+xcodebuild -project RickAndMorty-SwiftUI.xcodeproj \
+  -scheme RickAndMorty-SwiftUI \
+  -destination 'platform=iOS Simulator,name=iPhone 16' \
+  -only-testing:RickAndMorty-SwiftUITests/TTLInMemorySearchCacheDataSourceTests test
+```
+
+---
+
+## 🧠 Technical Decisions
+
+### Search & Cancellation
+
+- **`.searchable` + `onChange`**: Native SwiftUI integration with `NavigationStack`. The search bar appears idiomatically and the binding drives the entire search flow.
+- **Debounce (300ms)**: Each keystroke cancels the previous `Task` and starts a new one with a `Task.sleep` guard. This avoids firing a network request per character typed.
+- **Task cancellation**: `searchTask?.cancel()` before creating each new `Task` ensures in-flight URLSession requests are cancelled. A `guard !Task.isCancelled` check after the debounce and after the network call prevents stale results from appearing.
+- **Empty state**: `ContentUnavailableView` (iOS 17+) provides a native empty-results screen with system imagery.
+
+### TTL In-Memory Cache
+
+- **Actor-based**: `TTLInMemorySearchCacheDataSource` is an `actor`, guaranteeing thread-safe access without locks.
+- **TTL of 2 minutes** (configurable via `init`): Each entry stores an `expiresAt` date. Reads return `nil` if the entry has expired, forcing a fresh network fetch.
+- **Keyed by normalized query**: Queries are lowercased and trimmed before storage, so `"Rick"`, `" rick "`, and `"RICK"` all hit the same cache entry.
+- **No disk persistence for searches**: Search results are ephemeral by nature. The initial character list retains its SwiftData persistence through the existing `CompositeCharacterListCacheDataSource`.
+
+### Architecture
+
+- **`SearchCharactersUseCase`** is a dedicated use case, separated from `GetAllCharactersUseCase`, following the Single Responsibility Principle.
+- **`SearchCacheDataSourceType`** protocol allows the repository to depend on an abstraction, making the cache fully replaceable in tests (via `SearchCacheDataSourceStub`).
+- **Repository pattern**: `CharacterRepository.searchCharacters(name:)` checks the TTL cache first, falls back to the network, and stores the result — same pattern as the existing `getCharacters()` flow.
 
 ---
 
 ## 🔥 Future Enhancements
 
--	📌 **Add unit tests for the presentation layer**
+-	~~📌 **Add unit tests for the presentation layer**~~ ✅ Implemented (CharacterListViewModelTests — 8 tests covering fetch, search, debounce cancellation, error handling, and refresh)
 -	📌 **Add unit tests for the image download use case**
 -	📌 **Add unit tests for the character detail use case**
 -	📌 **Implement UI tests**
@@ -340,10 +429,18 @@ GET https://rickandmortyapi.com/api/character
 -	📌 **Localize character attributes such as status and gender types**
 -	📌 **Enhance location details by combining multiple API services in a dedicated use case**
 -	📌 **Extend episode details retrieval using a similar approach to location details**
--	📌 **Implement search filters for better character discovery**
+-	~~📌 **Implement search filters for better character discovery**~~ ✅ Implemented (search by name with debounce, cancellation, and TTL cache)
+
+---
+
+## 📖 Background
+
+This project was originally built in 2025 as the technical assessment for an iOS position at **Inditex / Zara**. After the technical interview with the Zara iOS architects, the role offered was raised from **iOS Developer** to **iOS Technical Lead** based on the codebase and the discussion around it.
+
+It has been kept up to date since then as a living reference for Clean Architecture and modern Swift concurrency in SwiftUI.
 
 ---
 
 ## 👨‍💻 Author
 
-💡 _Developed by_ **Francisco José Navarro García**  
+💡 _Developed by_ **Francisco José García Navarro**  

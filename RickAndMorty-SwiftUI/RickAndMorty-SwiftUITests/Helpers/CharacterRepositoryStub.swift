@@ -2,7 +2,7 @@
 //  CharacterRepositoryStub.swift
 //  RickAndMorty-SwiftUI
 //
-//  Created by Francisco José Navarro García on 06.02.2025.
+//  Created by Francisco José García Navarro on 06.02.2025.
 //
 
 import Foundation
@@ -16,6 +16,10 @@ final class CharacterRepositoryStub: CharacterRepositoryType {
     }
     
     func getCharacters() async -> Result<[CharacterEntity], CharacterDomainError> {
+        result
+    }
+
+    func searchCharacters(name: String) async -> Result<[CharacterEntity], CharacterDomainError> {
         result
     }
 }

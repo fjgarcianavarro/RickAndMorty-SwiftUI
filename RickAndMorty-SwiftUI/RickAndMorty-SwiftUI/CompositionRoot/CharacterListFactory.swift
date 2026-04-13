@@ -2,68 +2,58 @@
 //  CharacterListFactory.swift
 //  RickAndMorty-SwiftUI
 //
-//  Created by Francisco José Navarro García on 01.02.2025.
+//  Created by Francisco José García Navarro on 01.02.2025.
 //
 
 import Foundation
 
 final class CharacterListFactory {
-    static func create() -> CharacterListView {
-        CharacterListView(viewModel: createViewModel(),
-                          createCharacterDetailView: CharacterDetailFactory())
+    static func create(container: DependencyContainer) -> CharacterListView {
+        CharacterListView(viewModel: createViewModel(container: container),
+                          createCharacterDetailView: CharacterDetailFactory(container: container))
     }
-    
-    private static func createViewModel() -> CharacterListViewModel {
-        CharacterListViewModel(getAllCharactersUseCase: createUseCase(),
-                               downloadImageUseCase: createDownloadImageUseCase(),
+
+    private static func createViewModel(container: DependencyContainer) -> CharacterListViewModel {
+        CharacterListViewModel(getAllCharactersUseCase: createUseCase(container: container),
+                               searchCharactersUseCase: createSearchUseCase(container: container),
+                               downloadImageUseCase: createDownloadImageUseCase(container: container),
                                errorMapper: CharacterPresentableErrorMapper())
     }
-    
-    private static func createUseCase() -> GetAllCharactersUseCaseType {
-        GetAllCharactersUseCase(repository: createRepository())
+
+    private static func createSearchUseCase(container: DependencyContainer) -> SearchCharactersUseCaseType {
+        SearchCharactersUseCase(repository: createRepository(container: container))
     }
-    
-    private static func createRepository() -> CharacterRepositoryType {
-        CharacterRepository(characterRemoteDataSource: createRemoteDataSource(),
+
+    private static func createUseCase(container: DependencyContainer) -> GetAllCharactersUseCaseType {
+        GetAllCharactersUseCase(repository: createRepository(container: container))
+    }
+
+    private static func createRepository(container: DependencyContainer) -> CharacterRepositoryType {
+        CharacterRepository(characterRemoteDataSource: RemoteDataSource(httpClient: createHttpClient()),
                             domainMapper: CharacterDomainMapper(),
                             errorMapper: CharacterDomainErrorMapper(),
-                            cacheDatasource: createCacheDataSource())
+                            cacheDatasource: createCacheDataSource(container: container),
+                            searchCache: container.searchCache)
     }
-    
-    private static func createCacheDataSource() -> CharacterListCacheDataSourceType {
-        CompositeCharacterListCacheDataSource(temporalCache: InMemoryCharacterListCacheDataSource.shared,
-                                              pesistanceCache: createPersistanceCacheDataSource())
+
+    private static func createCacheDataSource(container: DependencyContainer) -> CharacterListCacheDataSourceType {
+        CompositeCharacterListCacheDataSource(temporalCache: container.inMemoryCharacterListCache,
+                                              persistenceCache: PersistentCharacterListCacheDataSource(storage: container.characterListStorage,
+                                                                                                      mapper: container.storageDTOMapper))
     }
-    
-    private static func createPersistanceCacheDataSource() -> CharacterListCacheDataSourceType {
-        PersistentCharacterListCacheDataSource(container: CharacterListStorage.shared,
-                                               characterDataMapper: createCharacterDataMapper())
+
+    private static func createDownloadImageUseCase(container: DependencyContainer) -> DownloadCharacterImageUseCaseType {
+        DownloadCharacterImageUseCase(
+            repository: CharacterImageRepository(
+                characterImageRemoteDataSource: CharacterImageRemoteDataSource(httpClient: createHttpClient()),
+                cacheDataSource: container.characterImageCache,
+                errorMapper: CharacterImageErrorMapper()
+            )
+        )
     }
-    
-    private static func createCharacterDataMapper() -> CharacterDataMapper {
-        CharacterDataMapper(locationMapper: LocationDataMapper())
-    }
-    
-    private static func createRemoteDataSource() -> CharacterListRemoteDataSourceType {
-        RemoteDataSource(httpClient: createHttpClient())
-    }
-    
-    private static func createDownloadImageUseCase() -> DownloadCharacterImageUseCaseType {
-        DownloadCharacterImageUseCase(repository: createCharacterImageRepository())
-    }
-    
-    private static func createCharacterImageRepository() -> CharacterImageRepositoryType {
-        CharacterImageRepository(characterImageRemoteDataSource: createCharacterImageRemoteDataSource(),
-                                 cacheDataSource: CharacterImageCache(),
-                                 errorMapper: CharacterImageErrorMapper())
-    }
-    
-    private static func createCharacterImageRemoteDataSource() -> CharacterImageRemoteDataSourceType {
-        CharacterImageRemoteDataSource(httpClient: createHttpClient())
-    }
-    
+
     private static func createHttpClient() -> HTTPClient {
-        URLSessionHTTPCLient(requestMaker: URLSessionRequestMaker(),
+        URLSessionHTTPClient(requestMaker: URLSessionRequestMaker(),
                              errorResolver: URLSessionErrorResolver())
     }
 }

@@ -2,13 +2,13 @@
 //  CharacterDomainErrorMapperTests.swift
 //  RickAndMorty-SwiftUITests
 //
-//  Created by Francisco José Navarro García on 08.02.2025.
+//  Created by Francisco José García Navarro on 08.02.2025.
 //
 
 import XCTest
 @testable import RickAndMorty_SwiftUI
 
-final class CharacterDomainErrorMapperTests: XCTestCase {
+nonisolated final class CharacterDomainErrorMapperTests: XCTestCase {
     /// Ensures that `map(error:)` correctly maps `.tooManyRequests` from `HTTPClientError` to `CharacterDomainError.tooManyRequests`.
     func test_map_returns_tooManyRequests_when_error_is_tooManyRequests() {
         // GIVEN
@@ -18,9 +18,9 @@ final class CharacterDomainErrorMapperTests: XCTestCase {
         let mappedError = sut.map(error: .tooManyRequests)
         
         // THEN
-        XCTAssertEqual(mappedError, .tooManyRequests)
+        XCTAssertEqual(mappedError, .tooManyRequests, "tooManyRequests HTTP error should map to tooManyRequests domain error")
     }
-    
+
     /// Ensures that `map(error:)` correctly maps `.clientError` and `.responseError` to `CharacterDomainError.invalidResponse`.
     func test_map_returns_invalidResponse_when_error_is_clientError_or_responseError() {
         // GIVEN
@@ -42,9 +42,9 @@ final class CharacterDomainErrorMapperTests: XCTestCase {
         let mappedError = sut.map(error: .decodingError)
         
         // THEN
-        XCTAssertEqual(mappedError, .decodingFailed)
+        XCTAssertEqual(mappedError, .decodingFailed, "decodingError HTTP error should map to decodingFailed domain error")
     }
-    
+
     /// Ensures that `map(error:)` correctly maps `.serverError`, `.invalidURL`, and `.unknownError` to `CharacterDomainError.generic`.
     func test_map_returns_generic_when_error_is_serverError_invalidURL_or_unknownError() {
         // GIVEN
@@ -66,6 +66,6 @@ final class CharacterDomainErrorMapperTests: XCTestCase {
         let mappedError = sut.map(error: nil)
         
         // THEN
-        XCTAssertEqual(mappedError, .generic)
+        XCTAssertEqual(mappedError, .generic, "nil error should map to .generic domain error")
     }
 }

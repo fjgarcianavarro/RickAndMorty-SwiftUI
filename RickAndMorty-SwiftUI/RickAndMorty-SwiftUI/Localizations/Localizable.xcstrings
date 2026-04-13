@@ -198,6 +198,23 @@
         }
       }
     },
+    "No characters found" : {
+      "comment" : "Shown when the search returns no results.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No characters found"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se encontraron personajes"
+          }
+        }
+      }
+    },
     "OK" : {
       "comment" : "Button to confirm and close the alert.",
       "localizations" : {
@@ -243,6 +260,23 @@
         }
       }
     },
+    "Search characters" : {
+      "comment" : "Placeholder text for the character search field.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search characters"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar personajes"
+          }
+        }
+      }
+    },
     "Species" : {
       "comment" : "Label for the character's species (e.g., Human, Alien).",
       "localizations" : {
@@ -261,6 +295,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Estado"
+          }
+        }
+      }
+    },
+    "Try a different search term" : {
+      "comment" : "Suggestion shown below the empty state when no results match.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try a different search term"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prueba con otro término de búsqueda"
           }
         }
       }

@@ -2,7 +2,7 @@
 //  ContentView.swift
 //  RickAndMorty-SwiftUI
 //
-//  Created by Francisco José Navarro García on 31.01.2025.
+//  Created by Francisco José García Navarro on 31.01.2025.
 //
 
 import SwiftUI
@@ -17,5 +17,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView(characterListView: CharacterListView(viewModel: .preview,
-                                                     createCharacterDetailView: CharacterDetailFactory()))
+                                                     createCharacterDetailView: CharacterDetailFactory(container: DependencyContainer())))
 }

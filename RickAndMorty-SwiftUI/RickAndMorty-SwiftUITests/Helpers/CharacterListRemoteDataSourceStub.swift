@@ -2,7 +2,7 @@
 //  CharacterListRemoteDataSourceStub.swift
 //  RickAndMorty-SwiftUITests
 //
-//  Created by Francisco José Navarro García on 06.02.2025.
+//  Created by Francisco José García Navarro on 06.02.2025.
 //
 
 import Foundation
@@ -16,6 +16,10 @@ final class CharacterListRemoteDataSourceStub: CharacterListRemoteDataSourceType
     }
     
     func getCharacters() async -> Result<[CharacterDTO], HTTPClientError> {
+        getCharacters
+    }
+
+    func searchCharacters(name: String) async -> Result<[CharacterDTO], HTTPClientError> {
         getCharacters
     }
 }

@@ -2,13 +2,13 @@
 //  ResultExtensionTests.swift
 //  RickAndMorty-SwiftUITests
 //
-//  Created by Francisco José Navarro García on 08.02.2025.
+//  Created by Francisco José García Navarro on 08.02.2025.
 //
 
 import XCTest
 @testable import RickAndMorty_SwiftUI
 
-final class ResultExtensionTests: XCTestCase {
+nonisolated final class ResultExtensionTests: XCTestCase {
     /// Ensures that `failureValue` correctly returns the error when the `Result` is a failure.
     func test_failureValue_returns_error_when_result_is_failure() {
         // GIVEN
@@ -19,8 +19,8 @@ final class ResultExtensionTests: XCTestCase {
         let capturedError = result.failureValue
         
         // THEN
-        XCTAssertNotNil(capturedError)
-        XCTAssertEqual(capturedError?.localizedDescription, expectedError.localizedDescription)
+        XCTAssertNotNil(capturedError, "failureValue should return the error for a failure result")
+        XCTAssertEqual(capturedError?.localizedDescription, expectedError.localizedDescription, "Returned error should match the original error")
     }
     
     /// Ensures that `failureValue` returns `nil` when the `Result` is a success.
@@ -32,6 +32,6 @@ final class ResultExtensionTests: XCTestCase {
         let capturedError = result.failureValue
         
         // THEN
-        XCTAssertNil(capturedError)
+        XCTAssertNil(capturedError, "failureValue should return nil for a success result")
     }
 }

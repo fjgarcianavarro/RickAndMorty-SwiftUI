@@ -1,13 +1,13 @@
 //
-//  URLSessionHTTPCLient.swift
+//  URLSessionHTTPClient.swift
 //  RickAndMorty-SwiftUI
 //
-//  Created by Francisco José Navarro García on 01.02.2025.
+//  Created by Francisco José García Navarro on 01.02.2025.
 //
 
 import Foundation
 
-final class URLSessionHTTPCLient: HTTPClient {
+final class URLSessionHTTPClient: HTTPClient {
     private let session: URLSession
     private let requestMaker: URLSessionRequestMaker
     private let errorResolver: URLSessionErrorResolver

@@ -2,62 +2,63 @@
 //  CharacterRepositoryTests.swift
 //  RickAndMorty-SwiftUITests
 //
-//  Created by Francisco José Navarro García on 06.02.2025.
+//  Created by Francisco José García Navarro on 06.02.2025.
 //
 
 import XCTest
 @testable import RickAndMorty_SwiftUI
 
-final class CharacterRepositoryTests: XCTestCase {
+nonisolated final class CharacterRepositoryTests: XCTestCase {
     /// Verifies that `getCharacters` returns a success result with cached characters when the cache is not empty.
-    func test_getCharacters_returns_success_when_there_is_nonEmpty_cache() async throws {
+    @MainActor func test_getCharacters_returns_success_when_there_is_nonEmpty_cache() async throws {
         // GIVEN
         let expectedCharacterList = CharacterEntityTestData.makeCharacterList()
-        
-        let (sut, _) = makeSUT(remoteDataSourceResult: .success([]),
+
+        let (sut, _, _) = makeSUT(remoteDataSourceResult: .success([]),
                                cachedValue: expectedCharacterList)
-        
+
         // WHEN
         let result = await sut.getCharacters()
-        
+
         // THEN
         let capturedCharacters = try XCTUnwrap(result.get())
-        XCTAssertEqual(capturedCharacters, expectedCharacterList)
+        XCTAssertEqual(capturedCharacters, expectedCharacterList, "Should return cached characters when cache is not empty")
     }
-    
+
     /// Verifies that `getCharacters` fetches data from the API when the cache is empty and returns the mapped result.
-    func test_getCharacters_returns_success_when_cache_is_empty() async throws {
+    @MainActor func test_getCharacters_returns_success_when_cache_is_empty() async throws {
         // GIVEN
         let expectedCharacterList = CharacterEntityTestData.makeCharacterList()
-        
-        let (sut, _) = makeSUT(remoteDataSourceResult: .success(CharacterDTOTestData.makeCharacterList()),
+
+        let (sut, _, _) = makeSUT(remoteDataSourceResult: .success(CharacterDTOTestData.makeCharacterList()),
                                cachedValue: [])
-        
+
         // WHEN
         let result = await sut.getCharacters()
-        
+
         // THEN
         let capturedCharacters = try XCTUnwrap(result.get())
-        XCTAssertEqual(capturedCharacters, expectedCharacterList)
+        XCTAssertEqual(capturedCharacters, expectedCharacterList, "Should return API characters mapped to entities when cache is empty")
     }
-    
+
     /// Ensures that when the cache is empty and data is fetched from the API, the fetched data is saved in the cache.
-    func test_getCharacters_saves_in_cache_when_cache_is_empty_and_gets_data_from_apiDataSource() async throws {
+    @MainActor func test_getCharacters_saves_in_cache_when_cache_is_empty_and_gets_data_from_apiDataSource() async throws {
         // GIVEN
         let expectedCharacterList = CharacterEntityTestData.makeCharacterList()
-        
-        let (sut, cacheDataSource) = makeSUT(remoteDataSourceResult: .success(CharacterDTOTestData.makeCharacterList()),
+
+        let (sut, cacheDataSource, _) = makeSUT(remoteDataSourceResult: .success(CharacterDTOTestData.makeCharacterList()),
                                              cachedValue: [])
-        
+
         // WHEN
         _ = await sut.getCharacters()
-        
+
         // THEN
-        XCTAssertEqual(cacheDataSource.cachedCharacterList, expectedCharacterList)
+        let cached = await cacheDataSource.cachedCharacterList
+        XCTAssertEqual(cached, expectedCharacterList, "Fetched characters should be saved in cache")
     }
-    
+
     /// Ensures that `getCharacters` correctly maps all HTTPClientError cases to CharacterDomainError.
-    func test_getCharacters_returns_correct_error_for_all_httpClientErrors() async {
+    @MainActor func test_getCharacters_returns_correct_error_for_all_httpClientErrors() async {
         // GIVEN
         let errorsToTest: [(HTTPClientError, CharacterDomainError)] = [
             (.clientError, .invalidResponse),
@@ -68,9 +69,9 @@ final class CharacterRepositoryTests: XCTestCase {
             (.unknownError, .generic),
             (.tooManyRequests, .tooManyRequests)
         ]
-        
+
         for (httpError, expectedDomainError) in errorsToTest {
-            let (sut, _) = makeSUT(remoteDataSourceResult: .failure(httpError),
+            let (sut, _, _) = makeSUT(remoteDataSourceResult: .failure(httpError),
                                    cachedValue: [])
 
             // WHEN
@@ -85,46 +86,46 @@ final class CharacterRepositoryTests: XCTestCase {
             XCTAssertEqual(error, expectedDomainError, "Failed for HTTP error: \(httpError)")
         }
     }
-    
+
     /// Ensures that when both cache and API return an empty list, the method returns an empty list successfully.
-    func test_getCharacters_returns_empty_array_when_cache_is_empty_and_apiDataSource_returns_empty() async throws {
+    @MainActor func test_getCharacters_returns_empty_array_when_cache_is_empty_and_apiDataSource_returns_empty() async throws {
         // GIVEN
-        let (sut, _) = makeSUT(remoteDataSourceResult: .success([]),
+        let (sut, _, _) = makeSUT(remoteDataSourceResult: .success([]),
                                cachedValue: [])
-        
+
         // WHEN
         let result = await sut.getCharacters()
-        
+
         // THEN
         let capturedCharacters = try XCTUnwrap(result.get())
-        XCTAssertEqual(capturedCharacters, [])
+        XCTAssertEqual(capturedCharacters, [], "Should return empty array when both cache and API are empty")
     }
-    
+
     /// Ensures that when the API fails with a `tooManyRequests` error, the repository correctly maps and returns that error.
-    func test_getCharacters_returns_tooManyRequests_error_when_apiDataSource_fails_with_tooManyRequests() async {
+    @MainActor func test_getCharacters_returns_tooManyRequests_error_when_apiDataSource_fails_with_tooManyRequests() async {
         // GIVEN
-        let (sut, _) = makeSUT(remoteDataSourceResult: .failure(.tooManyRequests),
+        let (sut, _, _) = makeSUT(remoteDataSourceResult: .failure(.tooManyRequests),
                                cachedValue: [])
-        
+
         // WHEN
         let result = await sut.getCharacters()
-        
+
         // THEN
         guard case .failure(let error) = result else {
             XCTFail("Expected failure, got success")
             return
         }
-        
-        XCTAssertEqual(error, .tooManyRequests)
+
+        XCTAssertEqual(error, .tooManyRequests, "Should map tooManyRequests HTTP error to tooManyRequests domain error")
     }
-    
+
     /// Ensures that the repository handles DTOs with nil values gracefully, mapping them correctly to default values.
-    func test_getCharacters_handles_nil_values_gracefully() async throws {
+    @MainActor func test_getCharacters_handles_nil_values_gracefully() async throws {
         // GIVEN
         let characterWithNilValues = [
             CharacterDTO(id: 1, name: "Rick", status: nil, species: nil, type: nil, gender: nil, origin: nil, location: nil, image: nil, episode: nil, url: nil)
         ]
-        
+
         let expectedCharacter = CharacterEntity(
             id: 1,
             name: "Rick",
@@ -137,30 +138,33 @@ final class CharacterRepositoryTests: XCTestCase {
             imageURL: nil,
             episodes: []
         )
-        
-        let (sut, _) = makeSUT(remoteDataSourceResult: .success(characterWithNilValues),
+
+        let (sut, _, _) = makeSUT(remoteDataSourceResult: .success(characterWithNilValues),
                                cachedValue: [])
-        
+
         // WHEN
         let result = await sut.getCharacters()
-        
+
         // THEN
         let capturedCharacters = try XCTUnwrap(result.get())
-        XCTAssertEqual(capturedCharacters, [expectedCharacter])
+        XCTAssertEqual(capturedCharacters, [expectedCharacter], "DTOs with nil values should be mapped to entities with default values")
     }
 }
 
 extension CharacterRepositoryTests {
-    private func makeSUT(remoteDataSourceResult: Result<[CharacterDTO], HTTPClientError>,
-                         cachedValue: [CharacterEntity]) -> (sut: CharacterRepository, cache: CharacterListCacheDataSourceStub) {
+    @MainActor private func makeSUT(remoteDataSourceResult: Result<[CharacterDTO], HTTPClientError>,
+                                     cachedValue: [CharacterEntity],
+                                     searchCachedResult: [CharacterEntity]? = nil) -> (sut: CharacterRepository, cache: CharacterListCacheDataSourceStub, searchCache: SearchCacheDataSourceStub) {
         let remoteDataSource = CharacterListRemoteDataSourceStub(getCharacters: remoteDataSourceResult)
         let cacheDataSource = CharacterListCacheDataSourceStub(getCharacterList: cachedValue)
-        
+        let searchCacheDataSource = SearchCacheDataSourceStub(cachedResult: searchCachedResult)
+
         let sut = CharacterRepository(characterRemoteDataSource: remoteDataSource,
                                       domainMapper: CharacterDomainMapper(),
                                       errorMapper: CharacterDomainErrorMapper(),
-                                      cacheDatasource: cacheDataSource)
-        
-        return (sut, cacheDataSource)
+                                      cacheDatasource: cacheDataSource,
+                                      searchCache: searchCacheDataSource)
+
+        return (sut, cacheDataSource, searchCacheDataSource)
     }
 }

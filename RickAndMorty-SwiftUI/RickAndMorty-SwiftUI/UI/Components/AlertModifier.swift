@@ -2,7 +2,7 @@
 //  AlertModifier.swift
 //  RickAndMorty-SwiftUI
 //
-//  Created by Francisco José Navarro García on 03.02.2025.
+//  Created by Francisco José García Navarro on 03.02.2025.
 //
 
 import SwiftUI

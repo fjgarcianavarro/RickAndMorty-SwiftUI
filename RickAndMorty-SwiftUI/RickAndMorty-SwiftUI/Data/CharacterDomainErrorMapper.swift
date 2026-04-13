@@ -2,12 +2,12 @@
 //  CharacterDomainErrorMapper.swift
 //  RickAndMorty-SwiftUI
 //
-//  Created by Francisco José Navarro García on 04.02.2025.
+//  Created by Francisco José García Navarro on 04.02.2025.
 //
 
 import Foundation
 
-final class CharacterDomainErrorMapper {
+nonisolated struct CharacterDomainErrorMapper {
     func map(error: HTTPClientError?) -> CharacterDomainError {
         switch error {
         case .clientError, .responseError:
@@ -16,7 +16,7 @@ final class CharacterDomainErrorMapper {
             return .decodingFailed
         case .tooManyRequests:
             return .tooManyRequests
-        case .serverError, .invalidURL, .unknownError, .none:
+        case .notFound, .serverError, .invalidURL, .unknownError, .none:
             return .generic
         }
     }

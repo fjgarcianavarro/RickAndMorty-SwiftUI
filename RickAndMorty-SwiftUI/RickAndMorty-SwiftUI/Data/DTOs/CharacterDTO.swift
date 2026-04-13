@@ -2,12 +2,12 @@
 //  CharacterDTO.swift
 //  RickAndMorty-SwiftUI
 //
-//  Created by Francisco José Navarro García on 01.02.2025.
+//  Created by Francisco José García Navarro on 01.02.2025.
 //
 
 import Foundation
 
-struct CharacterDTO: Codable {
+nonisolated struct CharacterDTO: Codable {
     let id: Int
     let name: String
     let status: String?

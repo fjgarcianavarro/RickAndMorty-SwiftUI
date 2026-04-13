@@ -2,7 +2,7 @@
 //  CharacterDetailRepository.swift
 //  RickAndMorty-SwiftUI
 //
-//  Created by Francisco José Navarro García on 12.02.2025.
+//  Created by Francisco José García Navarro on 12.02.2025.
 //
 
 import Foundation
