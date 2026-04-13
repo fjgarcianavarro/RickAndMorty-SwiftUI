@@ -16,7 +16,7 @@ nonisolated struct CharacterDomainErrorMapper {
             return .decodingFailed
         case .tooManyRequests:
             return .tooManyRequests
-        case .serverError, .invalidURL, .unknownError, .none:
+        case .notFound, .serverError, .invalidURL, .unknownError, .none:
             return .generic
         }
     }

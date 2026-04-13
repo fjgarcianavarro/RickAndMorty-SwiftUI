@@ -46,7 +46,9 @@ extension RemoteDataSource: CharacterListRemoteDataSourceType  {
                                                   baseUrl: baseURL)
 
         guard case .success(let data) = result else {
-            return .failure(handleError(error: result.failureValue as? HTTPClientError))
+            let error = result.failureValue as? HTTPClientError
+            if error == .notFound { return .success([]) }
+            return .failure(handleError(error: error))
         }
 
         guard let characterList = try? JSONDecoder().decode(CharacterResponseDTO.self, from: data) else {

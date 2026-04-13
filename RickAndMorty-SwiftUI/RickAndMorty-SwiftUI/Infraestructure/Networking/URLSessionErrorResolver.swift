@@ -9,14 +9,18 @@ import Foundation
 
 final class URLSessionErrorResolver {
     func resolve(statusCode: Int) -> HTTPClientError {
+        guard statusCode != 404 else {
+            return .notFound
+        }
+
         guard statusCode != 429 else {
             return .tooManyRequests
         }
-        
+
         guard statusCode >= 500 else {
             return .clientError
         }
-        
+
         return .serverError
     }
     
