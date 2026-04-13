@@ -22,7 +22,7 @@ nonisolated final class CharacterRepositoryTests: XCTestCase {
 
         // THEN
         let capturedCharacters = try XCTUnwrap(result.get())
-        XCTAssertEqual(capturedCharacters, expectedCharacterList)
+        XCTAssertEqual(capturedCharacters, expectedCharacterList, "Should return cached characters when cache is not empty")
     }
 
     /// Verifies that `getCharacters` fetches data from the API when the cache is empty and returns the mapped result.
@@ -38,7 +38,7 @@ nonisolated final class CharacterRepositoryTests: XCTestCase {
 
         // THEN
         let capturedCharacters = try XCTUnwrap(result.get())
-        XCTAssertEqual(capturedCharacters, expectedCharacterList)
+        XCTAssertEqual(capturedCharacters, expectedCharacterList, "Should return API characters mapped to entities when cache is empty")
     }
 
     /// Ensures that when the cache is empty and data is fetched from the API, the fetched data is saved in the cache.
@@ -54,7 +54,7 @@ nonisolated final class CharacterRepositoryTests: XCTestCase {
 
         // THEN
         let cached = await cacheDataSource.cachedCharacterList
-        XCTAssertEqual(cached, expectedCharacterList)
+        XCTAssertEqual(cached, expectedCharacterList, "Fetched characters should be saved in cache")
     }
 
     /// Ensures that `getCharacters` correctly maps all HTTPClientError cases to CharacterDomainError.
@@ -98,7 +98,7 @@ nonisolated final class CharacterRepositoryTests: XCTestCase {
 
         // THEN
         let capturedCharacters = try XCTUnwrap(result.get())
-        XCTAssertEqual(capturedCharacters, [])
+        XCTAssertEqual(capturedCharacters, [], "Should return empty array when both cache and API are empty")
     }
 
     /// Ensures that when the API fails with a `tooManyRequests` error, the repository correctly maps and returns that error.
@@ -116,7 +116,7 @@ nonisolated final class CharacterRepositoryTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(error, .tooManyRequests)
+        XCTAssertEqual(error, .tooManyRequests, "Should map tooManyRequests HTTP error to tooManyRequests domain error")
     }
 
     /// Ensures that the repository handles DTOs with nil values gracefully, mapping them correctly to default values.
@@ -147,7 +147,7 @@ nonisolated final class CharacterRepositoryTests: XCTestCase {
 
         // THEN
         let capturedCharacters = try XCTUnwrap(result.get())
-        XCTAssertEqual(capturedCharacters, [expectedCharacter])
+        XCTAssertEqual(capturedCharacters, [expectedCharacter], "DTOs with nil values should be mapped to entities with default values")
     }
 }
 

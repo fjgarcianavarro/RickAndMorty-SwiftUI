@@ -45,9 +45,9 @@ nonisolated final class CharacterDomainMapperTests: XCTestCase {
         let mappedEntity = sut.map(character: dto)
         
         // THEN
-        XCTAssertEqual(mappedEntity, expectedEntity)
+        XCTAssertEqual(mappedEntity, expectedEntity, "Valid DTO should be correctly mapped to entity with all fields")
     }
-    
+
     /// Ensures that `map(character:)` correctly handles `nil` values by assigning default values.
     func test_mapCharacter_handles_nil_values_gracefully() {
         // GIVEN
@@ -84,9 +84,9 @@ nonisolated final class CharacterDomainMapperTests: XCTestCase {
         let mappedEntity = sut.map(character: dto)
         
         // THEN
-        XCTAssertEqual(mappedEntity, expectedEntity)
+        XCTAssertEqual(mappedEntity, expectedEntity, "DTO with nil values should be mapped to entity with default values")
     }
-    
+
     /// Ensures that `map(characterList:)` correctly maps a list of `CharacterDTO` objects into `CharacterEntity` objects.
     func test_mapCharacterList_correctly_maps_valid_characterDTOs() {
         // GIVEN
@@ -152,6 +152,6 @@ nonisolated final class CharacterDomainMapperTests: XCTestCase {
         let mappedEntities = sut.map(characterList: dtos)
         
         // THEN
-        XCTAssertEqual(mappedEntities, expectedEntities)
+        XCTAssertEqual(mappedEntities, expectedEntities, "List of DTOs should be correctly mapped to list of entities")
     }
 }

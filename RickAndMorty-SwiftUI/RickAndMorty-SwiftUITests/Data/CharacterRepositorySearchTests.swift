@@ -22,7 +22,7 @@ nonisolated final class CharacterRepositorySearchTests: XCTestCase {
 
         // THEN
         let capturedCharacters = try XCTUnwrap(result.get())
-        XCTAssertEqual(capturedCharacters, cachedCharacters)
+        XCTAssertEqual(capturedCharacters, cachedCharacters, "Should return cached results when search cache has a valid entry")
     }
 
     /// Verifies that `searchCharacters` calls the remote data source when cache is empty.
@@ -37,7 +37,7 @@ nonisolated final class CharacterRepositorySearchTests: XCTestCase {
 
         // THEN
         let capturedCharacters = try XCTUnwrap(result.get())
-        XCTAssertEqual(capturedCharacters, expectedCharacters)
+        XCTAssertEqual(capturedCharacters, expectedCharacters, "Should fetch and return remote results when cache is empty")
     }
 
     /// Verifies that `searchCharacters` saves fetched results into the search cache.
@@ -53,8 +53,8 @@ nonisolated final class CharacterRepositorySearchTests: XCTestCase {
         // THEN
         let savedQuery = await searchCache.savedQuery
         let savedCharacters = await searchCache.savedCharacters
-        XCTAssertEqual(savedQuery, "rick")
-        XCTAssertEqual(savedCharacters, expectedCharacters)
+        XCTAssertEqual(savedQuery, "rick", "Search query should be saved in cache")
+        XCTAssertEqual(savedCharacters, expectedCharacters, "Fetched characters should be saved in search cache")
     }
 
     /// Verifies that `searchCharacters` returns the correct error when the remote data source fails.
@@ -71,7 +71,7 @@ nonisolated final class CharacterRepositorySearchTests: XCTestCase {
             XCTFail("Expected failure, got success")
             return
         }
-        XCTAssertEqual(error, .generic)
+        XCTAssertEqual(error, .generic, "Server error should be mapped to .generic domain error")
     }
 }
 

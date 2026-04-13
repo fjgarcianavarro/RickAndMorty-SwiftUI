@@ -19,7 +19,7 @@ nonisolated final class PersistentCharacterListCacheDataSourceTests: XCTestCase 
         let result = await sut.getCharacterList()
 
         // THEN
-        XCTAssertEqual(result, [])
+        XCTAssertEqual(result, [], "Empty storage should return empty character list")
     }
 
     /// Ensures that `getCharacterList` correctly maps stored `CharacterStorageDTO` into `CharacterEntity`.
@@ -35,7 +35,7 @@ nonisolated final class PersistentCharacterListCacheDataSourceTests: XCTestCase 
         let result = await sut.getCharacterList()
 
         // THEN
-        XCTAssertEqual(result, expectedEntities)
+        XCTAssertEqual(result, expectedEntities, "Stored DTOs should be correctly mapped to domain entities")
     }
 
     /// Ensures that `saveCharacterList` correctly handles an empty list without errors.
@@ -51,7 +51,7 @@ nonisolated final class PersistentCharacterListCacheDataSourceTests: XCTestCase 
 
         // THEN
         let insertedCount = await storageStub.insertedCharacters.count
-        XCTAssertEqual(insertedCount, 0)
+        XCTAssertEqual(insertedCount, 0, "Saving an empty list should not insert any characters")
     }
 }
 

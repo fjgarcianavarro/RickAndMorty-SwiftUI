@@ -21,7 +21,7 @@ nonisolated final class SearchCharactersUseCaseTests: XCTestCase {
 
         // THEN
         let capturedCharacters = try XCTUnwrap(result.get())
-        XCTAssertEqual(capturedCharacters, expectedCharacters)
+        XCTAssertEqual(capturedCharacters, expectedCharacters, "Returned characters should match the repository data")
     }
 
     @MainActor func test_execute_returnsError_onFailure() async {
@@ -37,6 +37,6 @@ nonisolated final class SearchCharactersUseCaseTests: XCTestCase {
             XCTFail("Expected failure, got success")
             return
         }
-        XCTAssertEqual(error, .generic)
+        XCTAssertEqual(error, .generic, "Error should be .generic when repository fails")
     }
 }

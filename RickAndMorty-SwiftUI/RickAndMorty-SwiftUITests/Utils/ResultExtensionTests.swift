@@ -19,8 +19,8 @@ nonisolated final class ResultExtensionTests: XCTestCase {
         let capturedError = result.failureValue
         
         // THEN
-        XCTAssertNotNil(capturedError)
-        XCTAssertEqual(capturedError?.localizedDescription, expectedError.localizedDescription)
+        XCTAssertNotNil(capturedError, "failureValue should return the error for a failure result")
+        XCTAssertEqual(capturedError?.localizedDescription, expectedError.localizedDescription, "Returned error should match the original error")
     }
     
     /// Ensures that `failureValue` returns `nil` when the `Result` is a success.
@@ -32,6 +32,6 @@ nonisolated final class ResultExtensionTests: XCTestCase {
         let capturedError = result.failureValue
         
         // THEN
-        XCTAssertNil(capturedError)
+        XCTAssertNil(capturedError, "failureValue should return nil for a success result")
     }
 }

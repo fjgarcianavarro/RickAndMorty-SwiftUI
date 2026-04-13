@@ -18,7 +18,7 @@ nonisolated final class TTLInMemorySearchCacheDataSourceTests: XCTestCase {
         let result = await sut.get(query: "rick")
 
         // THEN
-        XCTAssertNil(result)
+        XCTAssertNil(result, "Empty cache should return nil for any query")
     }
 
     @MainActor func test_get_returnsCharacters_whenCacheIsValid() async {
@@ -31,7 +31,7 @@ nonisolated final class TTLInMemorySearchCacheDataSourceTests: XCTestCase {
         let result = await sut.get(query: "rick")
 
         // THEN
-        XCTAssertEqual(result, characters)
+        XCTAssertEqual(result, characters, "Valid cache entry should return saved characters")
     }
 
     @MainActor func test_get_returnsNil_whenCacheHasExpired() async {
@@ -44,7 +44,7 @@ nonisolated final class TTLInMemorySearchCacheDataSourceTests: XCTestCase {
         let result = await sut.get(query: "rick")
 
         // THEN
-        XCTAssertNil(result)
+        XCTAssertNil(result, "Expired cache entry should return nil")
     }
 
     @MainActor func test_get_differentQueriesAreIndependent() async {
@@ -60,8 +60,8 @@ nonisolated final class TTLInMemorySearchCacheDataSourceTests: XCTestCase {
         let mortyResult = await sut.get(query: "morty")
 
         // THEN
-        XCTAssertEqual(rickResult, rickCharacters)
-        XCTAssertEqual(mortyResult, mortyCharacters)
+        XCTAssertEqual(rickResult, rickCharacters, "Rick query should return rick characters independently")
+        XCTAssertEqual(mortyResult, mortyCharacters, "Morty query should return morty characters independently")
     }
 
     @MainActor func test_save_overwritesPreviousEntry() async {
@@ -76,7 +76,7 @@ nonisolated final class TTLInMemorySearchCacheDataSourceTests: XCTestCase {
         let result = await sut.get(query: "rick")
 
         // THEN
-        XCTAssertEqual(result, updatedCharacters)
+        XCTAssertEqual(result, updatedCharacters, "Saving with the same query should overwrite the previous entry")
     }
 
     @MainActor func test_get_normalizesQueryKey() async {
@@ -89,6 +89,6 @@ nonisolated final class TTLInMemorySearchCacheDataSourceTests: XCTestCase {
         let result = await sut.get(query: "  rick  ")
 
         // THEN
-        XCTAssertEqual(result, characters)
+        XCTAssertEqual(result, characters, "Query lookup should be case-insensitive and trim whitespace")
     }
 }

@@ -13,7 +13,8 @@ final class CharacterListViewModel: ObservableObject {
     private let searchCharactersUseCase: SearchCharactersUseCaseType
     let downloadImageUseCase: DownloadCharacterImageUseCaseType
     private let errorMapper: CharacterPresentableErrorMapper
-    
+    private let debounceInterval: UInt64
+
     @Published var searchText: String = ""
     private var searchTask: Task<Void, Never>?
     @Published var characters: [CharacterPresentable] = []
@@ -21,28 +22,24 @@ final class CharacterListViewModel: ObservableObject {
     @Published var msg: LocalizedStringResource = LocalizedErrorKey.unknown.localized
     @Published var loading = false
     
-    init(getAllCharactersUseCase: GetAllCharactersUseCaseType, searchCharactersUseCase: SearchCharactersUseCaseType, downloadImageUseCase: DownloadCharacterImageUseCaseType, errorMapper: CharacterPresentableErrorMapper) {
+    init(getAllCharactersUseCase: GetAllCharactersUseCaseType,
+         searchCharactersUseCase: SearchCharactersUseCaseType,
+         downloadImageUseCase: DownloadCharacterImageUseCaseType,
+         errorMapper: CharacterPresentableErrorMapper,
+         debounceInterval: UInt64 = 300_000_000) {
         self.getAllCharactersUseCase = getAllCharactersUseCase
         self.searchCharactersUseCase = searchCharactersUseCase
         self.downloadImageUseCase = downloadImageUseCase
         self.errorMapper = errorMapper
+        self.debounceInterval = debounceInterval
     }
     
-    func onAppear() {
+    func refreshData() async {
+        await fetchCharacters()
+    }
+
+    func fetchCharacters() async {
         self.loading = true
-        
-        Task {
-            await fetchCharacters()
-        }
-    }
-    
-    func refreshData() {
-        Task {
-            await fetchCharacters()
-        }
-    }
-    
-    private func fetchCharacters() async {
         let result = await getAllCharactersUseCase.execute()
         
         guard case .success(let characters) = result else {
@@ -65,7 +62,7 @@ final class CharacterListViewModel: ObservableObject {
         }
 
         searchTask = Task {
-            try? await Task.sleep(nanoseconds: 300_000_000)
+            try? await Task.sleep(nanoseconds: debounceInterval)
             guard !Task.isCancelled else { return }
             await performSearch(query: query)
         }

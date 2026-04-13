@@ -64,9 +64,9 @@ nonisolated final class RemoteDataSourceTests: XCTestCase {
         
         // THEN
         let result = try XCTUnwrap(capturedResult.get())
-        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(result, expectedResult, "Valid JSON response should be correctly decoded into DTOs")
     }
-    
+
     /// Ensures that `getCharacters` fails when the HTTP client request fails.
     @MainActor func test_getCharacters_fails_when_httpClient_request_fails() async {
         // GIVEN
@@ -81,9 +81,9 @@ nonisolated final class RemoteDataSourceTests: XCTestCase {
             return
         }
         
-        XCTAssertEqual(error, .unknownError)
+        XCTAssertEqual(error, .unknownError, "HTTP client error should be propagated as-is")
     }
-    
+
     /// Ensures that `getCharacters` returns an empty array when the response has no results.
     @MainActor func test_getCharacters_returns_emptyArray_when_httpclient_requests_succeeds_and_response_has_no_results() async throws {
         // GIVEN
@@ -100,9 +100,9 @@ nonisolated final class RemoteDataSourceTests: XCTestCase {
         
         // THEN
         let result = try XCTUnwrap(capturedResult.get())
-        XCTAssertEqual(result, [])
+        XCTAssertEqual(result, [], "Null results field should be decoded as empty array")
     }
-    
+
     /// Ensures that `getCharacters` returns an empty array when the API returns an empty object.
     @MainActor func test_getCharacters_returns_emptyArray_when_response_is_empty() async throws {
         // GIVEN
@@ -117,9 +117,9 @@ nonisolated final class RemoteDataSourceTests: XCTestCase {
 
         // THEN
         let result = try XCTUnwrap(capturedResult.get())
-        XCTAssertEqual(result, [])
+        XCTAssertEqual(result, [], "Empty JSON object should be decoded as empty array")
     }
-    
+
     /// Ensures that `getCharacters` handles missing fields gracefully and provides default values.
     @MainActor func test_getCharacters_handles_missing_fields_gracefully() async throws {
         // GIVEN
@@ -157,9 +157,9 @@ nonisolated final class RemoteDataSourceTests: XCTestCase {
 
         // THEN
         let result = try XCTUnwrap(capturedResult.get())
-        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(result, expectedResult, "JSON with missing optional fields should be decoded with nil values")
     }
-    
+
     /// Ensures that `getCharacters` returns `.tooManyRequests` when the API rate limit is exceeded.
     @MainActor func test_getCharacters_fails_with_tooManyRequests_when_httpClient_returns_429() async {
         // GIVEN
@@ -174,6 +174,6 @@ nonisolated final class RemoteDataSourceTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(error, .tooManyRequests)
+        XCTAssertEqual(error, .tooManyRequests, "Rate limit error should be propagated as tooManyRequests")
     }
 }

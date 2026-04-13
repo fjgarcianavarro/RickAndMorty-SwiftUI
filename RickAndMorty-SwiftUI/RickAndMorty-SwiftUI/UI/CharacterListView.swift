@@ -64,11 +64,11 @@ struct CharacterListView: View {
                 CharacterListTypeSwitcherView(typeList: $typeList)
             }
         }
-        .onAppear {
-            viewModel.onAppear()
+        .task {
+            await viewModel.fetchCharacters()
         }
         .refreshable {
-            viewModel.refreshData()
+            await viewModel.refreshData()
         }
         .customAlert(message: viewModel.msg, showAlert: $viewModel.showAlert)
     }
