@@ -19,9 +19,9 @@ Additionally, the app uses **SwiftData** for local storage and **NSCache** for i
 |----------------|----------------|----------------|
 | <a href="https://github.com/user-attachments/assets/ef754ffd-06f1-4144-9455-3bad7b01827c" target="_blank"><img src="https://github.com/user-attachments/assets/ef754ffd-06f1-4144-9455-3bad7b01827c" width="400"></a> | <a href="https://github.com/user-attachments/assets/4d9e19b9-b04a-4110-aa50-eaa50107fafd" target="_blank"><img src="https://github.com/user-attachments/assets/4d9e19b9-b04a-4110-aa50-eaa50107fafd" width="400"></a> | <a href="https://github.com/user-attachments/assets/4ca2de26-cb09-4dc2-bc1b-5d4616b5949e" target="_blank"><img src="https://github.com/user-attachments/assets/4ca2de26-cb09-4dc2-bc1b-5d4616b5949e" width="400"></a> |
 
-| App Screenshots | App Screenshots | |
-|----------------|----------------|----------------|
-| <a href="https://github.com/user-attachments/assets/53f43f93-62b4-4a2d-9384-ab196de63828" target="_blank"><img src="https://github.com/user-attachments/assets/53f43f93-62b4-4a2d-9384-ab196de63828" width="400"></a> | <a href="https://github.com/user-attachments/assets/a1aea65d-e9b4-4d01-89e4-057d94b7ba18" target="_blank"><img src="https://github.com/user-attachments/assets/a1aea65d-e9b4-4d01-89e4-057d94b7ba18" width="400"></a> | |
+| App Screenshots | App Screenshots |
+|----------------|----------------|
+| <a href="https://github.com/user-attachments/assets/53f43f93-62b4-4a2d-9384-ab196de63828" target="_blank"><img src="https://github.com/user-attachments/assets/53f43f93-62b4-4a2d-9384-ab196de63828" width="400"></a> | <a href="https://github.com/user-attachments/assets/a1aea65d-e9b4-4d01-89e4-057d94b7ba18" target="_blank"><img src="https://github.com/user-attachments/assets/a1aea65d-e9b4-4d01-89e4-057d94b7ba18" width="400"></a> |
 
 
 | Code Coverage | SQLite Data (CoreData Cache) |
