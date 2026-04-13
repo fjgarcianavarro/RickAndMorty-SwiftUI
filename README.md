@@ -51,6 +51,7 @@ RickAndMorty-SwiftUI/
 │   ├── Cache/
 │   │   ├── CharacterCacheDataSourceType.swift
 │   │   ├── CharacterImageCache.swift
+│   │   ├── CharacterImageCacheType.swift
 │   │   ├── CharacterListCacheDataSourceType.swift
 │   │   ├── CompositeCharacterCacheDataSource.swift
 │   │   ├── CompositeCharacterListCacheDataSource.swift
@@ -96,13 +97,14 @@ RickAndMorty-SwiftUI/
 │── Infraestructure/
 │   ├── Data/
 │   │   ├── CharacterData.swift
-│   │   ├── CharacterDataMapper.swift
+│   │   ├── CharacterDataStorageMapper.swift
 │   │   ├── CharacterListStorage.swift
 │   │   ├── CharacterListStorageType.swift
 │   │   ├── CharacterStorage.swift
+│   │   ├── CharacterStorageDTO.swift
+│   │   ├── CharacterStorageDTOMapper.swift
 │   │   ├── CharacterStorageType.swift
 │   │   ├── LocationData.swift
-│   │   ├── LocationDataMapper.swift
 │   │   ├── PersistentCharacterCacheDataSource.swift
 │   │   ├── PersistentCharacterListCacheDataSource.swift
 │   ├── Networking/
@@ -133,6 +135,7 @@ RickAndMorty-SwiftUI/
 │   │   ├── CharacterListLoadingView.swift
 │   │   ├── CharacterListTypeSwitcherView.swift
 │   ├── CharacterDetailView.swift
+│   ├── CharacterDetailViewFactory.swift
 │   ├── CharacterListView.swift
 │   ├── Image+Styles.swift
 │   ├── Font+Styles.swift
@@ -154,6 +157,8 @@ RickAndMorty-SwiftUI/
 │   ├── Domain/
 │   │   ├── GetAllCharactersUseCaseTests.swift
 │   │   ├── SearchCharactersUseCaseTests.swift
+│   ├── Presentation/
+│   │   ├── CharacterListViewModelTests.swift
 │   ├── Helpers/
 │   │   ├── CharacterDTOTestData.swift
 │   │   ├── CharacterDataTestData.swift
@@ -163,10 +168,12 @@ RickAndMorty-SwiftUI/
 │   │   ├── CharacterListStorageStub.swift
 │   │   ├── CharacterRepositoryStub.swift
 │   │   ├── CharacterStorageDTOTestData.swift
+│   │   ├── DownloadCharacterImageUseCaseStub.swift
 │   │   ├── Equatable.swift
 │   │   ├── GetAllCharactersUseCaseStub.swift
 │   │   ├── HTTPClientStub.swift
 │   │   ├── SearchCacheDataSourceStub.swift
+│   │   ├── SearchCharactersUseCaseStub.swift
 │   ├── Infraestructure/
 │   │   ├── PersistentCharacterListCacheDataSourceTests.swift
 │   ├── Utils/
@@ -193,6 +200,16 @@ SwiftUI components that structure the user interface.
 
 ✅ **Utils (`Utils`)**  
 Extensions and utilities to support the application.
+
+### Persistence Boundary (StorageDTO Pattern)
+
+The `@Model` classes (`CharacterData`, `LocationData`) are confined to the `ModelActor` and are not `Sendable`. To safely cross the actor boundary under Swift 6 strict concurrency:
+
+- **`CharacterStorageDTO` / `LocationStorageDTO`** are lightweight `Sendable` value types that carry the same data as `@Model` but can be passed freely between isolation domains.
+- **`CharacterDataStorageMapper`** converts `@Model ↔ StorageDTO` **inside** the `ModelActor`.
+- **`CharacterStorageDTOMapper`** converts `StorageDTO ↔ Entity` **outside** the actor, at the persistence boundary.
+
+This two-step mapping keeps `@Model` types safely isolated while giving the rest of the architecture `Sendable` data to work with.
 
 ---
 
@@ -257,7 +274,8 @@ Additionally:
 
 ```swift
 #Preview {
-    CharacterListView(viewModel: .preview)
+    CharacterListView(viewModel: .preview,
+                      createCharacterDetailView: CharacterDetailFactory(container: DependencyContainer()))
         .environment(\.locale, .init(identifier: "es")) // Example for Spanish preview
 }
 ```
@@ -288,6 +306,7 @@ Key architectural decisions driven by this choice:
 - ✅ **SwiftData for local storage**
 - ✅ **ViewModifiers for UI customization**
 - ✅ **Dependency Injection**
+- ✅ **XCTest** for unit testing across all architecture layers
 
 ---
 
@@ -331,7 +350,8 @@ GET https://rickandmortyapi.com/api/character/{id}      # Character detail
 - ✅ **Character detail screen displaying key information**
 - ✅ **Custom fonts and reusable UI components for better design consistency**
 - ✅ **Modular and scalable architecture following Clean Architecture & SOLID principles**
-- ✅ **Unit tests covering use cases, repositories, cache expiration, and search flow**
+- ✅ **Unit tests covering all layers: use cases, repositories, cache, search flow, and presentation (ViewModels)**
+- ✅ **Presentation layer fully tested** with injectable debounce for deterministic ViewModel testing
 - ✅ **Interactive SwiftUI previews for all views, supporting different modes and languages**  
 
 ---
@@ -396,7 +416,7 @@ xcodebuild -project RickAndMorty-SwiftUI.xcodeproj \
 
 ## 🔥 Future Enhancements
 
--	📌 **Add unit tests for the presentation layer**
+-	~~📌 **Add unit tests for the presentation layer**~~ ✅ Implemented (CharacterListViewModelTests — 8 tests covering fetch, search, debounce cancellation, error handling, and refresh)
 -	📌 **Add unit tests for the image download use case**
 -	📌 **Add unit tests for the character detail use case**
 -	📌 **Implement UI tests**
